@@ -5,6 +5,7 @@ reinstall_package:
 	@pip install -e .
 
 install:
+	@pip install --upgrade pip
 	@if [ ! -d "${PWD}/data" ]; then \
 		mkdir ${PWD}/data; \
 	fi
