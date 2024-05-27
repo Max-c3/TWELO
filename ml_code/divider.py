@@ -1,5 +1,5 @@
 def divide(x, y):
     '''
-    this is another docstring
+    function for dividing
     '''
     return x / y
