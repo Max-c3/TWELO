@@ -3,5 +3,5 @@ def divide(x, y):
     function for dividing
     '''
     return x / y
-
-# modif in divider
+  
+# modif in main
