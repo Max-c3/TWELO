@@ -1,5 +1,6 @@
 ipdb
 ipykernel
+notebook
 numpy==1.23.5
 nbdime
 pandas==1.5.3
