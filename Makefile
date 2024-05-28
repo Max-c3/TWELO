@@ -11,10 +11,16 @@ reinstall_package:
 
 install:
 	@pip install --upgrade pip
+	@pip install -e .
+	@jupyter contrib nbextension install --user
+	@jupyter nbextension enable toc2/main
+	@jupyter nbextension enable collapsible_headings/main
+	@jupyter nbextension enable spellchecker/main
+	@jupyter nbextension enable code_prettify/code_prettify
 	@if [ ! -d "${PWD}/data" ]; then \
 		mkdir ${PWD}/data; \
 	fi
-	@pip install -e .
+
 
 setup_virtual_env:
 	@if pyenv virtualenvs | grep -q "kestrix"; then \
