@@ -1,6 +1,7 @@
 ipdb
 ipykernel
 numpy==1.23.5
+nbdime
 pandas==1.5.3
 # db-types
 pyarrow
