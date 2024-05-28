@@ -12,5 +12,9 @@ install:
 	@pip install -e .
 
 setup_virtual_env:
-	@pyenv virtualenv kestrix
+	@if pyenv virtualenvs | grep -q "kestrix"; then \
+		echo "Virtual environment 'kestrix' already exists."; \
+	else \
+		pyenv virtualenv 3.10.6 kestrix; \
+	fi
 	@pyenv local kestrix
