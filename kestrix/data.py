@@ -1,6 +1,7 @@
 from google.cloud import storage
 import os
 from pathlib import Path
+import tensorflow as tf
 
 BUCKET_NAME = "kestrix"
 
@@ -27,3 +28,23 @@ def download_raw_data():
         print("Finished download.")
 
     return None
+
+def convert_image_to_tensor(image_path:str) -> tf.Tensor:
+    """Convert an image to a tensor
+
+    Args:
+        image_path (str): File path of the image.
+
+    Returns:
+        tf.Tensor: Image decoded as a tensor.
+    """
+    if not os.path.exists(image_path):
+        print(f"File not found: {image_path}")
+        return None
+    else:
+        # Read the file contents as a string tensor
+        image_string = tf.io.read_file(image_path)
+        # Decode the JPEG image to a uint8 tensor
+        decoded_image = tf.image.decode_jpeg(image_string, channels=3)
+
+        return decoded_image
