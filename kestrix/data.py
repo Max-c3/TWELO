@@ -48,3 +48,4 @@ def convert_image_to_tensor(image_path:str) -> tf.Tensor:
         decoded_image = tf.image.decode_jpeg(image_string, channels=3)
 
         return decoded_image
+
