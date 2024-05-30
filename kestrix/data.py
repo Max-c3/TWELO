@@ -2,6 +2,7 @@ from google.cloud import storage
 import os
 from pathlib import Path
 import tensorflow as tf
+from tqdm import tqdm
 
 BUCKET_NAME = "kestrix"
 
@@ -22,7 +23,7 @@ def download_raw_data():
     else:
         os.makedirs(local_path_full)
         print(f"Downloading dataset to {local_path_full}.")
-        for blob in blobs:
+        for blob in tqdm(blobs):
             file_name = Path(blob.name).name
             blob.download_to_filename(local_path_full + file_name)
         print("Finished download.")
@@ -43,8 +44,81 @@ def convert_image_to_tensor(image_path:str) -> tf.Tensor:
         return None
     else:
         # Read the file contents as a string tensor
-        image_string = tf.io.read_file(image_path)
+        image = tf.io.read_file(image_path)
         # Decode the JPEG image to a uint8 tensor
-        decoded_image = tf.image.decode_jpeg(image_string, channels=3)
+        decoded_image = tf.image.decode_jpeg(image, channels=3)
 
         return decoded_image
+
+def pad_image(input_path:str, padding_amount:int=70) -> tf.Tensor:
+    """Returns the image padded as a Tensor.
+
+    Parameters
+    ----------
+    input_path : str
+        Input path.
+    padding_amount : int, optional
+        Amount of padding at each side, by default 70
+
+    Returns
+    -------
+    tf.Tensor
+        The Tensor of the padded image
+    """
+    decoded_image = convert_image_to_tensor(input_path)
+
+    # Define paddings
+    paddings = tf.constant([[padding_amount, padding_amount], [padding_amount, padding_amount]])  # for height and width
+
+    # Initialize an empty list to store padded channels
+    padded_channels = []
+
+    # Loop through each channel and apply padding
+    for i in range(decoded_image.shape[2]):  # Loop through the 3 channels
+        channel = decoded_image[:, :, i]  # Extract the i-th channel
+        padded_channel = tf.pad(channel, paddings, "CONSTANT")  # Apply padding
+        padded_channels.append(padded_channel)  # Add to list
+
+    # Stack the padded channels back together
+    padded_image = tf.stack(padded_channels, axis=2)
+    assert(padded_image.shape == tf.TensorShape([3140, 4140, 3]))
+
+    return padded_image
+
+
+def pad_all_images(input_dir:str, padding_amount=70) -> tf.Tensor:
+    """Pads all images at the specified directory and returns all as a tensor.
+
+    Parameters
+    ----------
+    input_dir : str
+        Path of the input directory.
+    padding_amount : int, optional
+        Amount of padding at each side, by default 70
+
+    Returns
+    -------
+    tf.Tensor
+        The Tensor containing all images in the directory.
+    """
+    print("Padding all images.")
+
+    padded_images = []
+
+    # Get the list of image files in the input directory
+    image_files = [f for f in os.listdir(input_dir) if f.lower().endswith(('.jpg', '.jpeg'))]
+
+    for image_file in tqdm(image_files):
+        image_path = os.path.join(input_dir, image_file)
+
+        padded_image = pad_image(image_path, padding_amount=padding_amount)
+
+        padded_images.append(padded_image)
+
+    tf_padded_images = tf.stack(padded_images, axis=0)
+
+    assert(tf_padded_images.shape == tf.TensorShape([len(image_files), 3140, 4140, 3]))
+
+    print(f"Finished padding all images. Output shape: {tf_padded_images.shape.as_list()}")
+
+    return tf_padded_images
