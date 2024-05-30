@@ -7,13 +7,13 @@ from tqdm import tqdm
 BUCKET_NAME = "kestrix"
 
 def download_raw_data():
-    """Download raw data from google cloud to `../data/kestrix/full/raw/`.
+    """Download raw data from google cloud to `../data/kestrix/raw/`.
 
     Returns:
         None
     """
     remote_path = "data/raw/"
-    local_path_full = "../data/kestrix/full/raw/"
+    local_path_full = "../data/kestrix/raw/"
 
     client = storage.Client()
     blobs = client.list_blobs(BUCKET_NAME, prefix=remote_path, delimiter="/")
@@ -106,7 +106,9 @@ def pad_all_images(input_dir:str, padding_amount=70) -> tf.Tensor:
     padded_images = []
 
     # Get the list of image files in the input directory
-    image_files = [f for f in os.listdir(input_dir) if f.lower().endswith(('.jpg', '.jpeg'))]
+    image_files = sorted(
+        [f for f in os.listdir(input_dir) if f.lower().endswith(('.jpg', '.jpeg'))]
+        )
 
     for image_file in tqdm(image_files):
         image_path = os.path.join(input_dir, image_file)

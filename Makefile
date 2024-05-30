@@ -27,3 +27,6 @@ notebook_extensions:
 	@jupyter nbextension enable collapsible_headings/main
 	@jupyter nbextension enable spellchecker/main
 	@jupyter nbextension enable code_prettify/code_prettify
+
+reset_local_data:
+	@rm -rf/data/*
