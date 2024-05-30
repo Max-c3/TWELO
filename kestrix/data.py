@@ -122,3 +122,68 @@ def pad_all_images(input_dir:str, padding_amount=70) -> tf.Tensor:
     print(f"Finished padding all images. Output shape: {tf_padded_images.shape.as_list()}")
 
     return tf_padded_images
+
+
+def parse_annotation(txt_file, folder_path):
+    with open(txt_file) as file:
+        lines = file.readlines()
+        file_name = Path(file.name).stem
+
+    image_path = os.path.join(folder_path, file_name + ".JPG")
+    boxes = []
+    class_ids = []
+    for line in lines:
+        line = line.split()
+
+        cls = float(line[0])
+        class_ids.append(cls)
+
+        x_min = float(line[1])
+        y_min = float(line[2])
+        x_max = float(line[3])
+        y_max = float(line[4])
+
+        boxes.append([x_min, y_min, x_max, y_max])
+
+    return image_path, boxes, class_ids
+
+def prepare_dataset(path:str):
+    txt_files = sorted(
+        [
+            os.path.join(path, file_name)
+            for file_name in os.listdir(path)
+            if file_name.endswith(".txt")
+        ]
+    )
+
+    image_paths = []
+    bbox = []
+    classes = []
+    for txt_file in txt_files:
+        image_path, boxes, class_ids = parse_annotation(txt_file, path)
+        image_paths.append(image_path)
+        bbox.append(boxes)
+        classes.append(class_ids)
+
+    bbox = tf.ragged.constant(bbox)
+    classes = tf.ragged.constant(classes)
+    image_paths = tf.ragged.constant(image_paths)
+
+    dataset = tf.data.Dataset.from_tensor_slices((image_paths, classes, bbox))
+
+    return dataset
+
+def load_image(image_path):
+    image = tf.io.read_file(image_path)
+    image = tf.image.decode_jpeg(image, channels=3)
+    return image
+
+def load_dataset(image_path, classes, bbox):
+    # Read Image
+    image = load_image(image_path)
+    bounding_boxes = {
+        "classes": tf.cast(classes, dtype=tf.float32),
+        "boxes": bbox,
+    }
+    return {"images": tf.cast(image, dtype=tf.float32),
+            "bounding_boxes": bounding_boxes}
