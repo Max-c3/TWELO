@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 import tensorflow as tf
 from tqdm import tqdm
+from kestrix.params import *
 
-BUCKET_NAME = "kestrix"
 
 def download_raw_data():
     """Download raw data from google cloud to `../data/kestrix/raw/`.
@@ -54,106 +54,6 @@ def download_comp_data():
 
     return None
 
-def convert_image_to_tensor(image_path:str) -> tf.Tensor:
-    """Convert an image to a tensor
-
-    Args:
-        image_path (str): File path of the image.
-
-    Returns:
-        tf.Tensor: Image decoded as a tensor.
-    """
-    if not os.path.exists(image_path):
-        print(f"File not found: {image_path}")
-        return None
-    else:
-        # Read the file contents as a string tensor
-        image = tf.io.read_file(image_path)
-        # Decode the JPEG image to a uint8 tensor
-        decoded_image = tf.image.decode_jpeg(image, channels=3)
-
-        return decoded_image
-
-def pad_image(input_path:str, padding_amount:int=70) -> tf.Tensor:
-    """Returns the image padded as a Tensor.
-
-    Parameters
-    ----------
-    input_path : str
-        Input path.
-    padding_amount : int, optional
-        Amount of padding at each side, by default 70
-
-    Returns
-    -------
-    tf.Tensor
-        The Tensor of the padded image
-    """
-    decoded_image = convert_image_to_tensor(input_path)
-
-    # Define paddings
-    paddings = tf.constant([[padding_amount, padding_amount], [padding_amount, padding_amount]])  # for height and width
-
-    # Initialize an empty list to store padded channels
-    padded_channels = []
-
-    # Loop through each channel and apply padding
-    for i in range(decoded_image.shape[2]):  # Loop through the 3 channels
-        channel = decoded_image[:, :, i]  # Extract the i-th channel
-        padded_channel = tf.pad(channel, paddings, "CONSTANT")  # Apply padding
-        padded_channels.append(padded_channel)  # Add to list
-
-    # Stack the padded channels back together
-    padded_image = tf.stack(padded_channels, axis=2)
-    assert(padded_image.shape == tf.TensorShape([3140, 4140, 3]))
-
-    return padded_image
-
-
-def pad_all_images(input_dir:str, padding_amount=70) -> tf.Tensor:
-    """Pads all images at the specified directory and returns all as a tensor.
-
-    Parameters
-    ----------
-    input_dir : str
-        Path of the input directory.
-    padding_amount : int, optional
-        Amount of padding at each side, by default 70
-
-    Returns
-    -------
-    tf.Tensor
-        The Tensor containing all images in the directory.
-    """
-    print("Padding all images.")
-
-    padded_images = []
-
-    # Get the list of image files in the input directory
-<<<<<<< HEAD
-    image_files = sorted([f for f in os.listdir(input_dir) if f.lower().endswith(('.jpg', '.jpeg'))])
-=======
-    image_files = sorted(
-        [f for f in os.listdir(input_dir) if f.lower().endswith(('.jpg', '.jpeg'))]
-        )
->>>>>>> postprocessing
-
-    for image_file in tqdm(image_files):
-        image_path = os.path.join(input_dir, image_file)
-
-        padded_image = pad_image(image_path, padding_amount=padding_amount)
-
-        padded_images.append(padded_image)
-
-    tf_padded_images = tf.stack(padded_images, axis=0)
-
-    assert(tf_padded_images.shape == tf.TensorShape([len(image_files), 3140, 4140, 3]))
-
-    print(f"Finished padding all images. Output shape: {tf_padded_images.shape.as_list()}")
-
-    return tf_padded_images
-
-
 def parse_annotation(txt_file, folder_path):
     with open(txt_file) as file:
         lines = file.readlines()
@@ -178,6 +78,7 @@ def parse_annotation(txt_file, folder_path):
     return image_path, boxes, class_ids
 
 def prepare_dataset(path:str):
+    print("Preparing dataset.")
     txt_files = sorted(
         [
             os.path.join(path, file_name)
@@ -192,6 +93,8 @@ def prepare_dataset(path:str):
     for txt_file in txt_files:
         image_path, boxes, class_ids = parse_annotation(txt_file, path)
         image_paths.append(image_path)
+        if len(class_ids) == 0:
+            class_ids = [2]
         bbox.append(boxes)
         classes.append(class_ids)
 
@@ -209,6 +112,7 @@ def load_image(image_path):
     return image
 
 def load_dataset(image_path, classes, bbox):
+    print("Loading dataset.")
     # Read Image
     image = load_image(image_path)
     bounding_boxes = {
@@ -217,4 +121,3 @@ def load_dataset(image_path, classes, bbox):
     }
     return {"images": tf.cast(image, dtype=tf.float32),
             "bounding_boxes": bounding_boxes}
-
