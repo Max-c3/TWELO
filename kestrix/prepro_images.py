@@ -30,10 +30,6 @@ def luc_coordinates():
     step_size_horiz = width / num_width_comp
     step_size_vert = height / num_height_comp
 
-    # Defining how much overlap there will be between each compartment vertically and horizontally
-    overlap_horiz = int(((comp_size * num_width_comp) - width)/num_width_comp)
-    overlap_vert = int(((comp_size * num_height_comp) - height)/num_height_comp)
-
     #creating a list with all the x_coordinates for the compartments (8)
     x_coordinates = [0]
     [x_coordinates.append(int(ele * step_size_horiz)) for ele in range(1, num_width_comp)]
@@ -56,6 +52,30 @@ def luc_coordinates():
     return coordinates_dict
 
 
+
+def slicing_dictionary(coordinates_dict):
+
+    # Calling the function 'luc_coordinates' and saving the resulting dictionary of coordinates in a variable
+    # coordinates_dict = luc_coordinates(num_width_comp, num_height_comp, comp_size)
+
+    slize_size = 640
+
+    # Turning the coordinates into a list
+    coordinates_list = [value for key, value in coordinates_dict.items()]
+
+    # creating a for loop for getting the correct slizing integers and putting them into a dictionary
+    slicing_dict = {}
+
+    for i in range (0, 48):
+        slice_1, slice_2 = coordinates_list[i][0], coordinates_list[i][1]
+        slice_1_a = slice_1
+        slice_1_b = slice_1_a + slize_size
+        slice_2_a = slice_2
+        slice_2_b = slice_2_a + slize_size
+        slicing_dict[i] = [slice_1_a, slice_1_b, slice_2_a, slice_2_b]
+
+    return slicing_dict
+
 # Function (2)
 
 def splitting_into_compartments(tensor, output_path):
@@ -68,6 +88,9 @@ def splitting_into_compartments(tensor, output_path):
 
     # Calling the function 'luc_coordinates' and saving the resulting dictionary of coordinates in a variable
     coordinates_dict = luc_coordinates()
+
+    # Calling the function 'slicing_dict' and saving the resulting dictionary in a variable
+    slicing_dict = slicing_dictionary(coordinates_dict)
 
     slize_size = 640
 
@@ -101,4 +124,4 @@ def splitting_into_compartments(tensor, output_path):
         image = Image.fromarray(compartment)
         image.save(f'{output_path}comp_{i}.jpg')
 
-    return compartment_tensors      # 48 Tensors of shape (640, 640, 3)
+    return compartment_tensors     # 48 Tensors of shape (640, 640, 3)

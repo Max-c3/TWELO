@@ -7,6 +7,8 @@ import pandas as pd
 # restitch
 
 
+
+
 # blur
 
 file_path = '/Users/tatianalupashina/code/lupatat/temp_folder/test_input/DJI_20230504183055_0150_V.txt'
