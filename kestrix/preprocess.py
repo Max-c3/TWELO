@@ -2,9 +2,12 @@ import numpy as np
 import os
 from PIL import Image
 import tensorflow as tf
+from tensorflow import keras
 import tqdm
+import keras_cv
 from keras_cv import bounding_box
-from kestrix.data import prepare_dataset, load_dataset, load_image
+
+from kestrix.data import prepare_dataset, load_dataset
 from kestrix.params import *
 
 
@@ -177,7 +180,7 @@ def slicing_dictionary(coordinates_dict):
 
     return slicing_dict
 
-def split_into_compartments(tensor:tf.Tensor, output_path:None):
+def split_into_compartments(tensor:tf.Tensor, output_path=None):
     '''
     Takes as an input the Tensor that represents the
     whole image (+ padding on each side of 70 pixels already added)
@@ -231,13 +234,14 @@ def preprocess_new_image(path):
 
     splitted_images = split_into_compartments(padded_image)
     splitted_images_float = tf.cast(splitted_images, dtype=tf.float32)
-    new_data = tf.data.Dataset.from_tensor_slices(splitted_images_float)
-    new_data = new_data.prefetch(num_parallel_calls=tf.data.AUTOTUNE)
+    splitted_images_float_batched = tf.expand_dims(splitted_images_float, axis=0)
+    new_data = tf.data.Dataset.from_tensor_slices(splitted_images_float_batched)
+    new_data = new_data.prefetch(tf.data.AUTOTUNE)
 
     return new_data
 
 
-def preprocess_data():
+def preprocess_training_data(small=False):
     path = "../data/kestrix/comp"
 
     def dict_to_tuple(inputs):
@@ -245,7 +249,7 @@ def preprocess_data():
             inputs["bounding_boxes"], max_boxes=32
         )
 
-    data = prepare_dataset(path)
+    data = prepare_dataset(path, small=small)
 
     # Splitting data
     # Determine number of validation data
