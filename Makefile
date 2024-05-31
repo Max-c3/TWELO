@@ -29,13 +29,13 @@ notebook_extensions:
 	@jupyter nbextension enable code_prettify/code_prettify
 
 reset_local_data:
-	@rm -rf /data/*
-	@mkdir /data/kestrix/
-	@mkdir /data/kestrix/comp
-	@mkdir /data/kestrix/raw
-	@mkdir /data/input
-	@mkdir /data/output
-	@mkdir /models
+	@rm -rf data/*
+	@mkdir data/kestrix/
+	@mkdir data/kestrix/comp
+	@mkdir data/kestrix/raw
+	@mkdir data/input
+	@mkdir data/output
+	@mkdir models
 
 
 download_train_data:
