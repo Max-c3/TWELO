@@ -6,7 +6,7 @@ with open("requirements.txt") as f:
 requirements = [x.strip() for x in content if "git+" not in x]
 
 setup(name='kestrix',
-      version="0.0.1",
+      version="0.0.2",
       description="Identification and Obfuscation of personal data in drone images",
       license="MIT",
       author="François-Xavier Foray, Tim Hildebrandt, Max Kreuz, Tatiana Lupashina",
