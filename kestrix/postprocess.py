@@ -24,6 +24,9 @@ bounding_boxes = df[['xmin', 'ymin', 'xmax', 'ymax']].values.tolist()
 bounding_boxes
 
 def blur_bounding_boxes(image_path, bounding_boxes):
+
+    output_folder = '../data/output'
+
     # Read the image
     image = cv2.imread(image_path)
 
@@ -48,9 +51,14 @@ def blur_bounding_boxes(image_path, bounding_boxes):
         image[ymin:ymax, xmin:xmax] = blurred_region
 
     # Display the image with the blurred regions
-    cv2.imshow('Image with Blurred Regions', image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    #cv2.imshow('Image with Blurred Regions', image)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
+
+    # save image with blurring
+    output_image_path = os.path.join(output_folder, 'output_image.jpg')
+    cv2.imwrite(output_image_path, image)
+    print(f'Image saved to {output_image_path}')
 
 
 
