@@ -153,23 +153,15 @@ def luc_coordinates():
     return coordinates_dict
 
 
-def split_into_compartments(tensor:tf.Tensor, output_path:None):
-    '''
-    Takes as an input the Tensor that represents the
-    whole image (+ padding on each side of 70 pixels already added)
-    that is supposed to be split into compartments.
-    The tensor should thus have the shape (3140, 4140, 3)
-    '''
-    assert(tensor.shape == (3140, 4140, 3))
-    print("Splitting into compartments.")
+def slicing_dictionary(coordinates_dict):
 
     # Calling the function 'luc_coordinates' and saving the resulting dictionary of coordinates in a variable
-    coordinates_dict = luc_coordinates()
+    # coordinates_dict = luc_coordinates(num_width_comp, num_height_comp, comp_size)
 
     slize_size = 640
 
     # Turning the coordinates into a list
-    coordinates_list = [value for _, value in coordinates_dict.items()]
+    coordinates_list = [value for key, value in coordinates_dict.items()]
 
     # creating a for loop for getting the correct slizing integers and putting them into a dictionary
     slicing_dict = {}
@@ -181,6 +173,26 @@ def split_into_compartments(tensor:tf.Tensor, output_path:None):
         slice_2_a = slice_2
         slice_2_b = slice_2_a + slize_size
         slicing_dict[i] = [slice_1_a, slice_1_b, slice_2_a, slice_2_b]
+
+
+    return slicing_dict
+
+def split_into_compartments(tensor:tf.Tensor, output_path:None):
+    '''
+    Takes as an input the Tensor that represents the
+    whole image (+ padding on each side of 70 pixels already added)
+    that is supposed to be split into compartments.
+    The tensor should thus have the shape (3140, 4140, 3)
+    '''
+    assert(tensor.shape == (3140, 4140, 3))
+    print("Splitting into compartments.")
+
+
+    # Calling the function 'luc_coordinates' and saving the resulting dictionary of coordinates in a variable
+    coordinates_dict = luc_coordinates()
+
+    # Calling the function 'slicing_dict' and saving the resulting dictionary in a variable
+    slicing_dict = slicing_dictionary(coordinates_dict)
 
     # slicing the input-tensor to get (48) of shape (640, 640, 3)
     #version tensor.shape = (3140, 4140, 3)
