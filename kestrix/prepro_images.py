@@ -52,11 +52,11 @@ def luc_coordinates():
     return coordinates_dict
 
 
-
 def slicing_dictionary(coordinates_dict):
 
     # Calling the function 'luc_coordinates' and saving the resulting dictionary of coordinates in a variable
     # coordinates_dict = luc_coordinates(num_width_comp, num_height_comp, comp_size)
+
 
     slize_size = 640
 
@@ -74,9 +74,9 @@ def slicing_dictionary(coordinates_dict):
         slice_2_b = slice_2_a + slize_size
         slicing_dict[i] = [slice_1_a, slice_1_b, slice_2_a, slice_2_b]
 
+
     return slicing_dict
 
-# Function (2)
 
 def splitting_into_compartments(tensor, output_path):
     '''
