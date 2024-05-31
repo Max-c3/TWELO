@@ -32,12 +32,12 @@ async def upload(file: UploadFile = File(...)):
 
         # Expand the user's home directory for saving the image
         ## --> Input correct input_image location
-        input_folder = '/Users/foxidy/code/Max-c3/Kestrix_Project/data/input'
+        input_folder = 'data/input'
         input_image_path = os.path.join(input_folder, f"{file.filename}")
 
         input_image.save(input_image_path, format='JPEG')
 
-        output_folder = '/Users/foxidy/code/Max-c3/Kestrix_Project/data/output'
+        output_folder = 'data/output'
         output_file_name = os.path.splitext(os.path.basename(file.filename))[0]
         output_image_path = os.path.join(output_folder, f"{output_file_name}_blurred.jpg")
         print(output_image_path)
@@ -62,37 +62,6 @@ async def upload(file: UploadFile = File(...)):
         bytes_io = BytesIO()
         blurred_image.save(bytes_io, format='JPEG')
         bytes_io.seek(0)
-
-        return Response(content=bytes_io.getvalue(), media_type="image/jpeg")
-        # {"INFO": f"File '{file.filename}' uploaded to the API and saved successfully to {file_location}."}
-
-    except Exception as e:
-        # Log the error
-        print(f"Error processing uploaded file: {e}")
-
-        # Return the error message
-        return {"message": f"There was an error processing the file: {str(e)}"}
-
-@app.post("/upload_")
-async def upload(file: UploadFile = File(...)):
-    try:
-        # Read the contents of the uploaded file
-        contents = await file.read()
-
-        # Convert the byte contents into an image
-        image = Image.open(BytesIO(contents))
-
-        # Rotate Image By 180 Degree
-        rotated_image = image.rotate(180)
-
-        # Save the image to a BytesIO object
-        bytes_io = BytesIO()
-        rotated_image.save(bytes_io, format='JPEG')
-        bytes_io.seek(0)
-
-        # Expand the user's home directory for saving the image
-        file_location = os.path.expanduser(f"~/Downloads/processed_{file.filename}")
-        rotated_image.save(file_location, format='JPEG')
 
         return Response(content=bytes_io.getvalue(), media_type="image/jpeg")
         # {"INFO": f"File '{file.filename}' uploaded to the API and saved successfully to {file_location}."}

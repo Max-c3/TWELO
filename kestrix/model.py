@@ -41,8 +41,8 @@ def compile_model(model):
 
     return model
 
-def train_model(new=True, model_path=None, small=False):
-    model = create_new_model() if new else load_model(model_path)
+def train_model(new=True, small=False):
+    model = create_new_model()
 
     train_ds, val_ds = preprocess_training_data(small)
 
