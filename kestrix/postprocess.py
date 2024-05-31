@@ -1,7 +1,7 @@
 import cv2
 import os
 import pandas as pd
-from kestrix.prepro_images import luc_coordinates, slicing_dictionary
+from kestrix.preprocess import luc_coordinates, slicing_dictionary
 
 def converting_coordinates_to_full_image(pred_dict):
     '''
