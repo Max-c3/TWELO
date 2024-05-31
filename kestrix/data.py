@@ -130,9 +130,13 @@ def pad_all_images(input_dir:str, padding_amount=70) -> tf.Tensor:
     padded_images = []
 
     # Get the list of image files in the input directory
+<<<<<<< HEAD
+    image_files = sorted([f for f in os.listdir(input_dir) if f.lower().endswith(('.jpg', '.jpeg'))])
+=======
     image_files = sorted(
         [f for f in os.listdir(input_dir) if f.lower().endswith(('.jpg', '.jpeg'))]
         )
+>>>>>>> postprocessing
 
     for image_file in tqdm(image_files):
         image_path = os.path.join(input_dir, image_file)
@@ -213,3 +217,4 @@ def load_dataset(image_path, classes, bbox):
     }
     return {"images": tf.cast(image, dtype=tf.float32),
             "bounding_boxes": bounding_boxes}
+
