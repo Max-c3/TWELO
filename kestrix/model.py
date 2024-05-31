@@ -2,29 +2,56 @@ from kestrix.params import *
 from kestrix.data import prepare_dataset, load_dataset, load_image, pad_image
 from kestrix.registry import save_model, load_model
 import tensorflow as tf
-from tensorflow.keras import keras
+from tensorflow import keras
 import keras_cv
+from keras_cv import bounding_box
+
+def create_new_model():
+    print("Creating new yolo model.")
+     # We will use yolov8 small backbone with coco weights
+    backbone = keras_cv.models.YOLOV8Backbone.from_preset(
+        "yolo_v8_s_backbone_coco"
+    )
+
+    prediction_decoder = keras_cv.layers.NonMaxSuppression(
+        bounding_box_format=BOUNDING_BOX_FORMAT,
+        from_logits=True,
+        iou_threshold=0.2,
+        confidence_threshold=0.7,
+    )
+
+    model = keras_cv.models.YOLOV8Detector(
+        num_classes=len(CLASS_MAPPING),
+        bounding_box_format=BOUNDING_BOX_FORMAT,
+        backbone=backbone,
+        fpn_depth=1,
+        prediction_decoder=prediction_decoder
+    )
+    model = compile_model(model)
+    return model
 
 def compile_model(model):
+    print("Compiling model.")
     optimizer = tf.keras.optimizers.legacy.Adam(
         learning_rate=LEARNING_RATE,
         global_clipnorm=GLOBAL_CLIPNORM,
     )
-    model = model.compile(
+    model.compile(
         optimizer=optimizer, classification_loss="binary_crossentropy", box_loss="ciou"
     )
 
     return model
 
-def train()->history:
-    model = load_model()
+def train_model(new=True, model_path=None):
+    model = create_new_model() if new else load_model(model_path)
 
     train_ds, val_ds = preprocess_data()
 
     coco_metrics_callback = keras_cv.callbacks.PyCOCOCallback(
         val_ds,
-        bounding_box_format)
+        BOUNDING_BOX_FORMAT)
 
+    print("Training model.")
     history = model.fit(
         train_ds,
         validation_data=val_ds,
@@ -57,7 +84,7 @@ def preprocess_new_image(path):
     return new_data
 
 
-def preprocess_data() -> (train_ds, val_ds):
+def preprocess_data():
     path = "../data/kestrix/comp"
 
     def dict_to_tuple(inputs):
@@ -69,7 +96,7 @@ def preprocess_data() -> (train_ds, val_ds):
 
     # Splitting data
     # Determine number of validation data
-    num_val = int(len(txt_files) * SPLIT_RATIO)
+    num_val = int(len(data) * SPLIT_RATIO)
 
     # split into train and validation
     # TODO change into random split via train_test_split
@@ -81,11 +108,11 @@ def preprocess_data() -> (train_ds, val_ds):
         layers=[
             keras_cv.layers.RandomFlip(
                 mode="horizontal",
-                bounding_box_format=bounding_box_format),
+                bounding_box_format=BOUNDING_BOX_FORMAT),
             keras_cv.layers.RandomShear(
                 x_factor=0.2,
                 y_factor=0.2,
-                bounding_box_format=bounding_box_format
+                bounding_box_format=BOUNDING_BOX_FORMAT
             )
         ]
     )
@@ -93,7 +120,7 @@ def preprocess_data() -> (train_ds, val_ds):
     resizing = keras_cv.layers.JitteredResize(
         target_size=(640, 640),
         scale_factor=(0.8, 1),
-        bounding_box_format=bounding_box_format,
+        bounding_box_format=BOUNDING_BOX_FORMAT,
     )
 
     # create training dataset

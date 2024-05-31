@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 import tensorflow as tf
 from tqdm import tqdm
+from kestrix.params import *
 
-BUCKET_NAME = "kestrix"
 
 def download_raw_data():
     """Download raw data from google cloud to `../data/kestrix/raw/`.
@@ -174,6 +174,7 @@ def parse_annotation(txt_file, folder_path):
     return image_path, boxes, class_ids
 
 def prepare_dataset(path:str):
+    print("Preparing dataset.")
     txt_files = sorted(
         [
             os.path.join(path, file_name)
@@ -205,6 +206,7 @@ def load_image(image_path):
     return image
 
 def load_dataset(image_path, classes, bbox):
+    print("Loading dataset.")
     # Read Image
     image = load_image(image_path)
     bounding_boxes = {
