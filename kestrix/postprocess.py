@@ -21,6 +21,7 @@ def converting_coordinates_to_full_image(pred_dict):
     # Calling the function 'slicing_dict' and saving the resulting dictionary in a variable
     slicing_dict = slicing_dictionary(coordinates_dict)
 
+
     # Transforming the output by the prediction of the model to dataframes =
     # usable format to work with afterwards
     dict_of_dfs = {}
@@ -50,12 +51,15 @@ def converting_coordinates_to_full_image(pred_dict):
                                     # to be blurred
 
 
-def blur_bounding_boxes(image_path, bounding_boxes):
+def blur_bounding_boxes(image_path, new_bounding_boxes):
 
-    output_folder = '../data/output'
+    output_folder = '/Users/tatianalupashina/code/lupatat/temp_folder/test_output'
+    image_name = Path(image_path).stem
 
     # Read the image
     image = cv2.imread(image_path)
+
+    bounding_boxes = new_bounding_boxes[['xmin', 'ymin', 'xmax', 'ymax']].values.tolist()
 
     for (xmin, ymin, xmax, ymax) in bounding_boxes:
         # Check if the bounding box coordinates are within the image dimensions
@@ -83,7 +87,7 @@ def blur_bounding_boxes(image_path, bounding_boxes):
     #cv2.destroyAllWindows()
 
     # save image with blurring
-    output_image_path = os.path.join(output_folder, 'output_image.jpg')
+    output_image_path = os.path.join(output_folder, f"{image_name}_blurred.jpeg")
     cv2.imwrite(output_image_path, image)
     print(f'Image saved to {output_image_path}')
 
