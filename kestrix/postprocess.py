@@ -35,7 +35,7 @@ def re_to_absolute_coordinates_xyxy(pred_dict):
         dict_of_dfs[i] = data_frame
 
     # Defining empty dataframe with the right column-names
-    new_df = pd.DataFrame(columns=['x_min', 'y_min', 'x_max', 'y_max'])
+    new_bounding_boxes = pd.DataFrame(columns=['x_min', 'y_min', 'x_max', 'y_max'])
 
     for key, value in dict_of_dfs.items():
         # key represents the number of the compartment
@@ -48,10 +48,10 @@ def re_to_absolute_coordinates_xyxy(pred_dict):
             abs_x_max = (value.iloc[num][2] + slicing_dict[key][0]) - 70
             abs_y_max = (value.iloc[num][3] + slicing_dict[key][2]) - 70
 
-            new_df.loc[len(new_df)] = abs_x_min, abs_y_min, abs_x_max, abs_y_max
+            new_bounding_boxes.loc[len(new_bounding_boxes)] = abs_x_min, abs_y_min, abs_x_max, abs_y_max
 
-    return new_df       # Puts out one big Dataframe with all bounding boxes
-                        # to be blurred
+    return new_bounding_boxes       # Puts out one big Dataframe with all bounding boxes
+                                    # to be blurred
 
 
 # blur
