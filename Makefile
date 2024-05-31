@@ -49,3 +49,6 @@ download_models:
 
 upload_models:
 	@gcloud storate cp -r models gs://kestrix/models
+
+run_api:
+	uvicorn kestrix.fast_api:app --reload
