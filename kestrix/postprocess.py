@@ -1,13 +1,9 @@
-import tensorflow as tf
 import cv2
-import numpy as np
 import os
 import pandas as pd
 from kestrix.prepro_images import luc_coordinates, slicing_dictionary
 
-# Function to 'Restitch'
-
-def re_to_absolute_coordinates_xyxy(pred_dict):
+def converting_coordinates_to_full_image(pred_dict):
     '''
     Input:
     pred_dict = output by the prediction of the model (dictionary with one key
@@ -54,22 +50,6 @@ def re_to_absolute_coordinates_xyxy(pred_dict):
                                     # to be blurred
 
 
-# blur
-
-file_path = '/Users/tatianalupashina/code/lupatat/temp_folder/test_input/DJI_20230504183055_0150_V.txt'
-image_path = '/Users/tatianalupashina/code/lupatat/temp_folder/test_input/DJI_20230504183055_0150_V.JPG'
-image = cv2.imread(image_path)
-
-column_names = ["class", "xmin", "ymin", "xmax", "ymax"]
-
-# Read the file with a space delimiter and assign the column names
-df = pd.read_csv(file_path, names=column_names, delimiter=' ')
-print(df)
-
-# Extract bounding box coordinates and convert them to a list of tuples
-bounding_boxes = df[['xmin', 'ymin', 'xmax', 'ymax']].values.tolist()
-bounding_boxes
-
 def blur_bounding_boxes(image_path, bounding_boxes):
 
     output_folder = '../data/output'
@@ -107,6 +87,4 @@ def blur_bounding_boxes(image_path, bounding_boxes):
     cv2.imwrite(output_image_path, image)
     print(f'Image saved to {output_image_path}')
 
-
-
-blur_bounding_boxes(image_path, bounding_boxes)
+    return None
