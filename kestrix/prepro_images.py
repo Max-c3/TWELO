@@ -6,9 +6,7 @@ from kestrix.data import pad_image
 
 # import matplotlib.pyplot as plt
 
-#Defining the inputs for the function (1)
-
-# Function (1) -
+# Function (1) - needed to be called by Function (2)
 
 def luc_coordinates():
     ''' A function that takes as an input (given in the function already)
@@ -69,12 +67,12 @@ def splitting_into_compartments(tensor, output_path):
     '''
 
     # Calling the function 'luc_coordinates' and saving the resulting dictionary of coordinates in a variable
-    coordinates_dict = luc_coordinates(width, height, num_width_comp, num_height_comp, comp_size)
+    coordinates_dict = luc_coordinates()
 
     slize_size = 640
 
     # Turning the coordinates into a list
-    coordinates_list = [value for key, value in coordinates_dict.items()]
+    coordinates_list = [value for _, value in coordinates_dict.items()]
 
     # creating a for loop for getting the correct slizing integers and putting them into a dictionary
     slicing_dict = {}
@@ -97,9 +95,10 @@ def splitting_into_compartments(tensor, output_path):
     # To np.array
     compartment_tensors = np.array(list_of_tensors)
 
+    # Saving each compartment to the output_path (here: /data/kestrix/temp) as a
     for i in range(0, 48):
         compartment = compartment_tensors[i,:,:,:]  # object shape (640, 640, 3)
         image = Image.fromarray(compartment)
-        image.save(f'{output_path}comp_{i}.png')
+        image.save(f'{output_path}comp_{i}.jpg')
 
     return compartment_tensors      # 48 Tensors of shape (640, 640, 3)
