@@ -1,9 +1,10 @@
 import cv2
 import os
+from pathlib import Path
 import pandas as pd
-from kestrix.prepro_images import luc_coordinates, slicing_dictionary
+from kestrix.preprocess import luc_coordinates, slicing_dictionary
 
-def converting_coordinates_to_full_image(pred_dict):
+def convert_coordinates_to_full_image(pred_dict):
     '''
     Input:
     pred_dict = output by the prediction of the model (dictionary with one key
@@ -45,7 +46,7 @@ def converting_coordinates_to_full_image(pred_dict):
             abs_x_max = (value.iloc[num][2] + slicing_dict[key][0]) - 70
             abs_y_max = (value.iloc[num][3] + slicing_dict[key][2]) - 70
 
-            new_bounding_boxes.loc[len(new_bounding_boxes)] = abs_x_min, abs_y_min, abs_x_max, abs_y_max
+            new_bounding_boxes.loc[len(new_bounding_boxes)] = int(abs_x_min), int(abs_y_min), int(abs_x_max), int(abs_y_max)
 
     return new_bounding_boxes       # Puts out one big Dataframe with all bounding boxes
                                     # to be blurred
@@ -53,13 +54,13 @@ def converting_coordinates_to_full_image(pred_dict):
 
 def blur_bounding_boxes(image_path, new_bounding_boxes):
 
-    output_folder = '/Users/tatianalupashina/code/lupatat/temp_folder/test_output'
+    output_folder = '../data/output'
     image_name = Path(image_path).stem
 
     # Read the image
     image = cv2.imread(image_path)
 
-    bounding_boxes = new_bounding_boxes[['xmin', 'ymin', 'xmax', 'ymax']].values.tolist()
+    bounding_boxes = new_bounding_boxes[['x_min', 'y_min', 'x_max', 'y_max']].to_numpy().tolist()
 
     for (xmin, ymin, xmax, ymax) in bounding_boxes:
         # Check if the bounding box coordinates are within the image dimensions
@@ -81,10 +82,10 @@ def blur_bounding_boxes(image_path, new_bounding_boxes):
         # Replace the original region with the blurred region
         image[ymin:ymax, xmin:xmax] = blurred_region
 
-    # Display the image with the blurred regions
-    #cv2.imshow('Image with Blurred Regions', image)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
+    #Display the image with the blurred regions
+    cv2.imshow('Image with Blurred Regions', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     # save image with blurring
     output_image_path = os.path.join(output_folder, f"{image_name}_blurred.jpeg")

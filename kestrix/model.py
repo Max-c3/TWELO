@@ -1,6 +1,6 @@
 from kestrix.params import *
 from kestrix.registry import save_model, load_model
-from kestrix.preprocess import preprocess_new_image, preprocess_data
+from kestrix.preprocess import preprocess_new_image, preprocess_training_data
 import tensorflow as tf
 from tensorflow import keras
 import keras_cv
@@ -26,7 +26,7 @@ def create_new_model():
         fpn_depth=1,
         prediction_decoder=prediction_decoder
     )
-    model = compile_model(model)
+
     return model
 
 def compile_model(model):
@@ -41,10 +41,10 @@ def compile_model(model):
 
     return model
 
-def train_model(new=True, model_path=None):
+def train_model(new=True, model_path=None, small=False):
     model = create_new_model() if new else load_model(model_path)
 
-    train_ds, val_ds = preprocess_data()
+    train_ds, val_ds = preprocess_training_data(small)
 
     coco_metrics_callback = keras_cv.callbacks.PyCOCOCallback(
         val_ds,

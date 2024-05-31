@@ -77,7 +77,7 @@ def parse_annotation(txt_file, folder_path):
 
     return image_path, boxes, class_ids
 
-def prepare_dataset(path:str):
+def prepare_dataset(path:str, small:False):
     print("Preparing dataset.")
     txt_files = sorted(
         [
@@ -97,6 +97,8 @@ def prepare_dataset(path:str):
             class_ids = [2]
         bbox.append(boxes)
         classes.append(class_ids)
+    if small:
+        txt_files = txt_files[:200]
 
     bbox = tf.ragged.constant(bbox)
     classes = tf.ragged.constant(classes)
