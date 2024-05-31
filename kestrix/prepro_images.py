@@ -92,22 +92,6 @@ def splitting_into_compartments(tensor, output_path):
     # Calling the function 'slicing_dict' and saving the resulting dictionary in a variable
     slicing_dict = slicing_dictionary(coordinates_dict)
 
-    slize_size = 640
-
-    # Turning the coordinates into a list
-    coordinates_list = [value for _, value in coordinates_dict.items()]
-
-    # creating a for loop for getting the correct slizing integers and putting them into a dictionary
-    slicing_dict = {}
-
-    for i in range (0, 48):
-        slice_1, slice_2 = coordinates_list[i][0], coordinates_list[i][1]
-        slice_1_a = slice_1
-        slice_1_b = slice_1_a + slize_size
-        slice_2_a = slice_2
-        slice_2_b = slice_2_a + slize_size
-        slicing_dict[i] = [slice_1_a, slice_1_b, slice_2_a, slice_2_b]
-
     # slicing the input-tensor to get (48) of shape (640, 640, 3)
     #version tensor.shape = (3140, 4140, 3)
     list_of_tensors = [tensor[slicing_dict[ele][2]:slicing_dict[ele][3],

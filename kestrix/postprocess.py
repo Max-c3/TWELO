@@ -3,10 +3,55 @@ import cv2
 import numpy as np
 import os
 import pandas as pd
+from kestrix.prepro_images import luc_coordinates, slicing_dictionary
 
-# restitch
+# Function to 'Restitch'
 
+def re_to_absolute_coordinates_xyxy(pred_dict):
+    '''
+    Input:
+    pred_dict = output by the prediction of the model (dictionary with one key
+    'boxes')
+    Calculates the absolute coordinates of a bounding box
+    for a single compartment in the context of the output
+    image of size width = 4000, height = 3000
+    Output: absolute coordinates in form (xyxy = x_min, y_min, x_max, y_max)
+    Those need to be blurred
+    '''
 
+    # Calling the function 'luc_coordinates' and saving the resulting dictionary of coordinates in a variable
+    coordinates_dict = luc_coordinates()
+
+    # Calling the function 'slicing_dict' and saving the resulting dictionary in a variable
+    slicing_dict = slicing_dictionary(coordinates_dict)
+
+    # Transforming the output by the prediction of the model to dataframes =
+    # usable format to work with afterwards
+    dict_of_dfs = {}
+
+    for i in range (0, 48):
+        columns = ['x_min', 'y_min', 'x_max', 'y_max']
+        data_frame = pd.DataFrame(data= pred_dict['boxes'][i], columns=columns)
+        dict_of_dfs[i] = data_frame
+
+    # Defining empty dataframe with the right column-names
+    new_df = pd.DataFrame(columns=['x_min', 'y_min', 'x_max', 'y_max'])
+
+    for key, value in dict_of_dfs.items():
+        # key represents the number of the compartment
+        # value represents the Dataframe with bounding box coordinates
+
+        for num in range(0, value.shape[0]):
+
+            abs_x_min = (value.iloc[num][0] + slicing_dict[key][0]) - 70
+            abs_y_min = (value.iloc[num][1] + slicing_dict[key][2]) - 70
+            abs_x_max = (value.iloc[num][2] + slicing_dict[key][0]) - 70
+            abs_y_max = (value.iloc[num][3] + slicing_dict[key][2]) - 70
+
+            new_df.loc[len(new_df)] = abs_x_min, abs_y_min, abs_x_max, abs_y_max
+
+    return new_df       # Puts out one big Dataframe with all bounding boxes
+                        # to be blurred
 
 
 # blur
