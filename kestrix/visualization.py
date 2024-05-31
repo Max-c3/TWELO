@@ -1,4 +1,4 @@
-from keras_cv import visualization
+from keras_cv import visualization, bounding_box
 from kestrix.params import *
 from kestrix.data import load_dataset, prepare_dataset
 import tensorflow as tf
@@ -29,5 +29,23 @@ def visualize_bounding_box(path:str) -> None:
         scale=5,
         font_scale=0.7,
         bounding_box_format=BOUNDING_BOX_FORMAT,
+        class_mapping=CLASS_MAPPING,
+    )
+
+def visualize_detections(model, dataset):
+    images, y_true = next(iter(dataset.take(1)))
+    y_pred = model.predict(images)
+    y_pred = bounding_box.to_ragged(y_pred)
+    visualization.plot_bounding_box_gallery(
+        images,
+        value_range=(0, 255),
+        bounding_box_format=BOUNDING_BOX_FORMAT,
+        y_true=y_true,
+        y_pred=y_pred,
+        scale=4,
+        rows=2,
+        cols=2,
+        show=True,
+        font_scale=0.7,
         class_mapping=CLASS_MAPPING,
     )

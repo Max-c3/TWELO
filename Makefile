@@ -27,3 +27,12 @@ notebook_extensions:
 	@jupyter nbextension enable collapsible_headings/main
 	@jupyter nbextension enable spellchecker/main
 	@jupyter nbextension enable code_prettify/code_prettify
+
+reset_local_data:
+	@rm -rf /data/*
+
+download_train_data:
+	@if [ ! -d "${PWD}/data/kestrix/comp" ]; then \
+		mkdir ${PWD}/data/kestrix/comp; \
+	fi
+	@gcloud storage cp -r gs://kestrix/data/comp ${PWD}/data/kestrix
