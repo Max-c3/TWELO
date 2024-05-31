@@ -30,9 +30,22 @@ notebook_extensions:
 
 reset_local_data:
 	@rm -rf /data/*
+	@mkdir /data/kestrix/
+	@mkdir /data/kestrix/comp
+	@mkdir /data/kestrix/raw
+	@mkdir /data/output
+	@mkdir /data/temp
+	@mkdir /models
+
 
 download_train_data:
 	@if [ ! -d "${PWD}/data/kestrix/comp" ]; then \
 		mkdir ${PWD}/data/kestrix/comp; \
 	fi
 	@gcloud storage cp -r gs://kestrix/data/comp ${PWD}/data/kestrix
+
+download_models:
+	@gcloud storate cp -r gs://kestrix/models models
+
+upload_models:
+	@gcloud storate cp -r models gs://kestrix/models
