@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import pandas as pd
 from kestrix.preprocess import luc_coordinates, slicing_dictionary
+from kestrix.params import *
 
 def convert_coordinates_to_full_image(pred_dict):
     '''
@@ -54,13 +55,14 @@ def convert_coordinates_to_full_image(pred_dict):
 
 def blur_bounding_boxes(image_path, new_bounding_boxes):
 
-    output_folder = '../data/output'
+    output_folder = 'data/output'
     image_name = Path(image_path).stem
 
     # Read the image
     image = cv2.imread(image_path)
 
     bounding_boxes = new_bounding_boxes[['x_min', 'y_min', 'x_max', 'y_max']].to_numpy().tolist()
+
 
     for (xmin, ymin, xmax, ymax) in bounding_boxes:
         # Check if the bounding box coordinates are within the image dimensions
@@ -79,13 +81,10 @@ def blur_bounding_boxes(image_path, new_bounding_boxes):
         # Apply Gaussian blur to the region of interest with a large kernel size for more blur
         blurred_region = cv2.GaussianBlur(region_of_interest, (401, 401), 0)
 
+
         # Replace the original region with the blurred region
         image[ymin:ymax, xmin:xmax] = blurred_region
 
-    #Display the image with the blurred regions
-    cv2.imshow('Image with Blurred Regions', image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
 
     # save image with blurring
     output_image_path = os.path.join(output_folder, f"{image_name}_blurred.jpeg")

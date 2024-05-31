@@ -53,3 +53,6 @@ download_models:
 
 upload_models:
 	@gcloud storate cp -r models gs://kestrix/models
+
+run_train:
+	python -c 'from kestrix.model import train_model; train_model()'

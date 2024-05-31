@@ -242,7 +242,7 @@ def preprocess_new_image(path):
 
 
 def preprocess_training_data(small=False):
-    path = "../data/kestrix/comp"
+    path = "data/kestrix/comp"
 
     def dict_to_tuple(inputs):
         return inputs["images"], bounding_box.to_dense(

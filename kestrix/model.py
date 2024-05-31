@@ -9,7 +9,8 @@ def create_new_model():
     print("Creating new yolo model.")
      # We will use yolov8 small backbone with coco weights
     backbone = keras_cv.models.YOLOV8Backbone.from_preset(
-        "yolo_v8_s_backbone_coco"
+        "yolo_v8_xl_backbone_coco",
+        load_weights=True
     )
 
     prediction_decoder = keras_cv.layers.NonMaxSuppression(
@@ -42,8 +43,8 @@ def compile_model(model):
     return model
 
 def train_model(new=True, model_path=None, small=False):
-    model = create_new_model() if new else load_model(model_path)
-
+    model = create_new_model()
+    model = compile_model(model)
     train_ds, val_ds = preprocess_training_data(small)
 
     coco_metrics_callback = keras_cv.callbacks.PyCOCOCallback(
@@ -61,10 +62,10 @@ def train_model(new=True, model_path=None, small=False):
 
     return history, model
 
-def predict(input, model=None):
+def predict(image_path, model=None):
 
     if not model:
-        model = load_model("../models/TODO:")
+        model = load_model("models/")
 
     preprocessed_image = preprocess_new_image(input)
 
