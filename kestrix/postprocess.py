@@ -3,32 +3,35 @@ import cv2
 import numpy as np
 import os
 import pandas as pd
+from pathlib import Path
 
 # restitch
 
 
 # blur
 
-file_path = '/Users/tatianalupashina/code/lupatat/temp_folder/test_input/DJI_20230504183055_0150_V.txt'
-image_path = '/Users/tatianalupashina/code/lupatat/temp_folder/test_input/DJI_20230504183055_0150_V.JPG'
-image = cv2.imread(image_path)
+#file_path = '/Users/tatianalupashina/code/lupatat/temp_folder/test_input/DJI_20230504183055_0150_V.txt'
+#image_path = '/Users/tatianalupashina/code/lupatat/temp_folder/test_input/DJI_20230504183055_0150_V.JPG'
 
-column_names = ["class", "xmin", "ymin", "xmax", "ymax"]
+#column_names = ["class", "xmin", "ymin", "xmax", "ymax"]
 
 # Read the file with a space delimiter and assign the column names
-df = pd.read_csv(file_path, names=column_names, delimiter=' ')
-print(df)
+# df = pd.read_csv(file_path, names=column_names, delimiter=' ')
+# print(df)
 
 # Extract bounding box coordinates and convert them to a list of tuples
-bounding_boxes = df[['xmin', 'ymin', 'xmax', 'ymax']].values.tolist()
-bounding_boxes
+# bounding_boxes = df[['xmin', 'ymin', 'xmax', 'ymax']].values.tolist()
+# bounding_boxes
 
-def blur_bounding_boxes(image_path, bounding_boxes):
+def blur_bounding_boxes(image_path, new_bounding_boxes):
 
-    output_folder = '../data/output'
+    output_folder = '/Users/tatianalupashina/code/lupatat/temp_folder/test_output'
+    image_name = Path(image_path).stem
 
     # Read the image
     image = cv2.imread(image_path)
+
+    bounding_boxes = new_bounding_boxes[['xmin', 'ymin', 'xmax', 'ymax']].values.tolist()
 
     for (xmin, ymin, xmax, ymax) in bounding_boxes:
         # Check if the bounding box coordinates are within the image dimensions
@@ -56,10 +59,9 @@ def blur_bounding_boxes(image_path, bounding_boxes):
     #cv2.destroyAllWindows()
 
     # save image with blurring
-    output_image_path = os.path.join(output_folder, 'output_image.jpg')
+    output_image_path = os.path.join(output_folder, f"{image_name}_blurred.jpeg")
     cv2.imwrite(output_image_path, image)
     print(f'Image saved to {output_image_path}')
 
 
-
-blur_bounding_boxes(image_path, bounding_boxes)
+#blur_bounding_boxes(image_path, new_bounding_boxes)
