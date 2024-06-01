@@ -1,3 +1,4 @@
+import logging
 from kestrix.params import *
 from kestrix.registry import save_model, load_model
 from kestrix.preprocess import preprocess_new_image, preprocess_training_data

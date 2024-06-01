@@ -49,10 +49,11 @@ download_train_data:
 	@gcloud storage cp -r gs://kestrix/data/raw ${PWD}/data/kestrix
 
 download_models:
-	@gcloud storate cp -r gs://kestrix/models models
+	@gcloud storage cp -r gs://kestrix/models models
 
 upload_models:
-	@gcloud storate cp -r models gs://kestrix/models
+	@gcloud storage cp -r models gs://kestrix/models
 
 run_train:
-	python -c 'from kestrix.model import train_model; train_model()'
+	python -c "from kestrix.model import train_model; train_model()" 2>&1 | tee -a logfile.log
+	gcloud storage cp -r models gs://kestrix/models
