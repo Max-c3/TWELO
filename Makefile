@@ -55,5 +55,5 @@ upload_models:
 	@gcloud storage cp -r models gs://kestrix/models
 
 run_train:
-	python -c "from kestrix.model import train_model; train_model()" 2>&1 | tee -a logfile.log
+	python -c "from kestrix.model import train_model; train_model()"
 	gcloud storage cp -r models gs://kestrix/models

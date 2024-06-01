@@ -1,5 +1,9 @@
 import os
 from pathlib import Path
+from cloud_detect import provider
+
+PROVIDER = provider()
+
 BOUNDING_BOX_FORMAT = "xyxy"
 CLASS_MAPPING = {
     "car": 0,
