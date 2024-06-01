@@ -43,9 +43,10 @@ def compile_model(model):
 
     return model
 
-def train_model(new=True, model_path=None, small=False):
+def train_model(new=True, small=False):
     model = create_new_model()
     model = compile_model(model)
+
     train_ds, val_ds = preprocess_training_data(small)
 
     coco_metrics_callback = keras_cv.callbacks.PyCOCOCallback(

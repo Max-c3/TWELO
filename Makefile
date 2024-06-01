@@ -54,6 +54,9 @@ download_models:
 upload_models:
 	@gcloud storage cp -r models gs://kestrix/models
 
+run_api:
+	uvicorn kestrix.fast_api:app --reload
+
 run_train:
 	python -c "from kestrix.model import train_model; train_model()"
 	gcloud storage cp -r models gs://kestrix/models

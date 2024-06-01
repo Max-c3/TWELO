@@ -54,8 +54,7 @@ def convert_coordinates_to_full_image(pred_dict):
 
 
 def blur_bounding_boxes(image_path, new_bounding_boxes):
-
-    output_folder = 'data/output'
+    output_folder = 'data/output/'
     image_name = Path(image_path).stem
 
     # Read the image
@@ -85,9 +84,13 @@ def blur_bounding_boxes(image_path, new_bounding_boxes):
         # Replace the original region with the blurred region
         image[ymin:ymax, xmin:xmax] = blurred_region
 
+    #Display the image with the blurred regions
+    # cv2.imshow('Image with Blurred Regions', image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     # save image with blurring
-    output_image_path = os.path.join(output_folder, f"{image_name}_blurred.jpeg")
+    output_image_path = os.path.join(output_folder, f"{image_name}_blurred.jpg")
     cv2.imwrite(output_image_path, image)
     print(f'Image saved to {output_image_path}')
 

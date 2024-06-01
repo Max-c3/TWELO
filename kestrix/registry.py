@@ -17,7 +17,7 @@ def load_model(model_name=None):
         _description_
     """
     print("Loading existing model.")
-    model = keras.saving.load_model("models/{model_name}")
+    model = keras.saving.load_model(f"models/{model_name}")
 
     return model
 
