@@ -17,9 +17,10 @@ def load_model(model_name=None):
         _description_
     """
     print("Loading existing model.")
-    model = keras.saving.load_model(f"../models/{model_name}")
+    model = keras.saving.load_model(f"models/{model_name}")
+
     return model
 
 def save_model(model):
     now = datetime.datetime.now().isoformat()
-    model.save(f"../models/{now}.keras")
+    model.save("models/{now}.keras")

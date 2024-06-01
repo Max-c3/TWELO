@@ -7,13 +7,13 @@ from kestrix.params import *
 
 
 def download_raw_data():
-    """Download raw data from google cloud to `../data/kestrix/raw/`.
+    """Download raw data from google cloud to `data/kestrix/raw/`.
 
     Returns:
         None
     """
     remote_path = "data/raw/"
-    local_path_full = "../data/kestrix/raw/"
+    local_path_full = "data/kestrix/raw/"
 
     client = storage.Client()
     blobs = client.list_blobs(BUCKET_NAME, prefix=remote_path, delimiter="/")
@@ -31,13 +31,13 @@ def download_raw_data():
     return None
 
 def download_comp_data():
-    """Download compartmented data from google cloud to `../data/kestrix/comp/`.
+    """Download compartmented data from google cloud to `/data/kestrix/comp/`.
 
     Returns:
         None
     """
     remote_path = "data/comp/"
-    local_path_full = "../data/kestrix/comp/"
+    local_path_full = "data/kestrix/comp/"
 
     client = storage.Client()
     blobs = client.list_blobs(BUCKET_NAME, prefix=remote_path, delimiter="/")
@@ -58,8 +58,8 @@ def parse_annotation(txt_file, folder_path):
     with open(txt_file) as file:
         lines = file.readlines()
         file_name = Path(file.name).stem
-
-    image_path = os.path.join(folder_path, file_name + ".JPG")
+    file_ending = ".jpg" if PROVIDER == "gcp" else ".JPG"
+    image_path = os.path.join(folder_path, file_name + file_ending)
     boxes = []
     class_ids = []
     for line in lines:
