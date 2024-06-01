@@ -58,7 +58,7 @@ def parse_annotation(txt_file, folder_path):
     with open(txt_file) as file:
         lines = file.readlines()
         file_name = Path(file.name).stem
-    file_ending = ".jpg" if PROVIDER == "gcp" else ".JPG"
+    file_ending = ".JPG" if PROVIDER == "" else ".jpg"
     image_path = os.path.join(folder_path, file_name + file_ending)
     boxes = []
     class_ids = []
