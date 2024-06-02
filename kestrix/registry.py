@@ -23,4 +23,6 @@ def load_model(model_name=None):
 
 def save_model(model):
     now = datetime.datetime.now().isoformat()
-    model.save("models/{now}.keras")
+    model_name = f"{now}.keras"
+    print(f"Saving model {model_name}.")
+    model.save(f"models/{model_name}")
