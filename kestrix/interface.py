@@ -1,3 +1,0 @@
-# load model
-# predict
-# postprocess
