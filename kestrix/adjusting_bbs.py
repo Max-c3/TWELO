@@ -182,6 +182,9 @@ def to_absolute_coordinates_xyxy(slicing_dict, compartment_num, x_min_tmp, y_min
     return abs_x_min, abs_y_min, abs_x_max, abs_y_max
 
 
+# Function 
+
+
 
 
 # Now putting all of the above together to a pipeline!
