@@ -33,29 +33,29 @@ def download_raw_data():
 
     return None
 
-def download_comp_data():
-    """Download compartmented data from google cloud to `/data/kestrix/comp/`.
+# def download_comp_data():
+#     """Download compartmented data from google cloud to `/data/kestrix/comp/`.
 
-    Returns:
-        None
-    """
-    remote_path = "data/comp/"
-    local_path_full = "data/kestrix/comp/"
+#     Returns:
+#         None
+#     """
+#     remote_path = "data/comp/"
+#     local_path_full = "data/kestrix/comp/"
 
-    client = storage.Client()
-    blobs = client.list_blobs(BUCKET_NAME, prefix=remote_path, delimiter="/")
+#     client = storage.Client()
+#     blobs = client.list_blobs(BUCKET_NAME, prefix=remote_path, delimiter="/")
 
-    if os.path.exists(local_path_full):
-        print("Dataset already exists.")
-    else:
-        os.makedirs(local_path_full)
-        print(f"Downloading dataset to {local_path_full}.")
-        for blob in tqdm(blobs):
-            file_name = Path(blob.name).name
-            blob.download_to_filename(local_path_full + file_name)
-        print("Finished download.")
+#     if os.path.exists(local_path_full):
+#         print("Dataset already exists.")
+#     else:
+#         os.makedirs(local_path_full)
+#         print(f"Downloading dataset to {local_path_full}.")
+#         for blob in tqdm(blobs):
+#             file_name = Path(blob.name).name
+#             blob.download_to_filename(local_path_full + file_name)
+#         print("Finished download.")
 
-    return None
+#     return None
 
 def parse_annotation(txt_file, folder_path):
     with open(txt_file) as file:
@@ -100,12 +100,9 @@ def prepare_dataset(path:str, small:0):
             bbox.append(boxes)
             classes.append(class_ids)
     if small > 0:
-        # Generate random sample of indices
-        indices = random.sample(range(len(image_paths)), small)
-
-        image_paths = [image_paths[i] for i in indices]
-        bbox = [bbox[i] for i in indices]
-        classes = [classes[i] for i in indices]
+        image_paths = image_paths[:small]
+        bbox = bbox[:small]
+        classes = bbox[:small]
 
     bbox = tf.ragged.constant(bbox)
     classes = tf.ragged.constant(classes)
@@ -126,7 +123,7 @@ def load_dataset(image_path, classes, bbox):
     image = load_image(image_path)
     bounding_boxes = {
         "classes": tf.cast(classes, dtype=tf.float32),
-        "boxes": bbox,
+        "boxes": tf.cast(classes, dtype=tf.float32),
     }
     return {"images": tf.cast(image, dtype=tf.float32),
             "bounding_boxes": bounding_boxes}
