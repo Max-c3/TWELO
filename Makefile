@@ -37,7 +37,6 @@ reset_local_data:
 	@mkdir data/kestrix/test
 	@mkdir data/input
 	@mkdir data/output
-	@mkdir models
 
 
 download_train_data:
