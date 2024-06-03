@@ -241,7 +241,7 @@ def preprocess_new_image(path):
     return new_data
 
 
-def preprocess_training_data(small=False):
+def preprocess_training_data(small=0):
     path = "data/kestrix/comp"
 
     def dict_to_tuple(inputs):
@@ -256,7 +256,6 @@ def preprocess_training_data(small=False):
     num_val = int(len(data) * SPLIT_RATIO)
 
     # split into train and validation
-    # TODO change into random split via train_test_split
     val_data = data.take(num_val)
     train_data = data.skip(num_val)
 
