@@ -33,16 +33,18 @@ reset_local_data:
 	@mkdir data/kestrix/
 	@mkdir data/kestrix/comp
 	@mkdir data/kestrix/raw
+	@mkdir data/kestrix/train
+	@mkdir data/kestrix/test
 	@mkdir data/input
 	@mkdir data/output
 	@mkdir models
 
 
 download_train_data:
-	@if [ ! -d "${PWD}/data/kestrix/comp" ]; then \
-		mkdir ${PWD}/data/kestrix/comp; \
+	@if [ ! -d "${PWD}/data/kestrix/train" ]; then \
+		mkdir ${PWD}/data/kestrix/train; \
 	fi
-	@gcloud storage cp -r gs://kestrix/data/comp ${PWD}/data/kestrix
+	@gcloud storage cp -r gs://kestrix/data/train ${PWD}/data/kestrix
 	@if [ ! -d "${PWD}/data/kestrix/raw" ]; then \
 		mkdir ${PWD}/data/kestrix/raw; \
 	fi
