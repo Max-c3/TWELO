@@ -9,7 +9,7 @@ from kestrix.postprocess import convert_coordinates_to_full_image, blur_bounding
 
 app = FastAPI()
 
-loaded_model =  keras.saving.load_model("/Users/foxidy/code/Max-c3/Kestrix_Project/models/compartment_20240531.keras")
+loaded_model =  keras.saving.load_model("models/2024-06-03T14:16:53.281748.keras")
 model = compile_model(loaded_model)
 
 @app.get("/")
