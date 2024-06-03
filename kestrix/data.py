@@ -96,8 +96,10 @@ def prepare_dataset(path:str, small=0):
             image_paths.append(image_path)
             bbox.append(boxes)
             classes.append(class_ids)
-    if small:
-        txt_files = txt_files[:200]
+    if small > 0:
+        image_paths = image_paths[:small]
+        bbox = bbox[:small]
+        classes = classes[:small]
 
     bbox = tf.ragged.constant(bbox)
     classes = tf.ragged.constant(classes)

@@ -43,7 +43,7 @@ def compile_model(model):
 
     return model
 
-def train_model(new=True, small=False):
+def train_model(small=0):
     model = create_new_model()
     model = compile_model(model)
 

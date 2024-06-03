@@ -241,7 +241,7 @@ def preprocess_new_image(path):
     return new_data
 
 
-def preprocess_training_data(small=False):
+def preprocess_training_data(small=0):
     path = "data/kestrix/train"
 
     def dict_to_tuple(inputs):
