@@ -10,7 +10,12 @@ def create_new_model():
     print("Creating new yolo model.")
      # We will use yolov8 small backbone with coco weights
     backbone = keras_cv.models.YOLOV8Backbone.from_preset(
-        "yolo_v8_xl_backbone_coco",
+        "yolo_v8_xs_backbone_coco",
+        # increase size step by step from
+        # yolo_v8_s_backbone_coco,
+        # yolo_v8_m_backbone_coco,
+        # yolo_v8_l_backbone_coco,
+        # yolo_v8_xl_backbone_coco
         load_weights=True
     )
 
@@ -43,7 +48,7 @@ def compile_model(model):
 
     return model
 
-def train_model(new=True, small=False):
+def train_model(small=0):
     model = create_new_model()
     model = compile_model(model)
 
@@ -65,11 +70,7 @@ def train_model(new=True, small=False):
     return history, model
 
 def predict(image_path, model=None):
-
-    if not model:
-        model = load_model("models/")
-
-    preprocessed_image = preprocess_new_image(input)
+    preprocessed_image = preprocess_new_image(image_path)
 
     y_pred = model.predict(preprocessed_image)
 

@@ -241,8 +241,8 @@ def preprocess_new_image(path):
     return new_data
 
 
-def preprocess_training_data(small=False):
-    path = "data/kestrix/comp"
+def preprocess_training_data(small=0):
+    path = "data/kestrix/train"
 
     def dict_to_tuple(inputs):
         return inputs["images"], bounding_box.to_dense(
@@ -256,7 +256,6 @@ def preprocess_training_data(small=False):
     num_val = int(len(data) * SPLIT_RATIO)
 
     # split into train and validation
-    # TODO change into random split via train_test_split
     val_data = data.take(num_val)
     train_data = data.skip(num_val)
 
@@ -292,6 +291,7 @@ def preprocess_training_data(small=False):
     val_ds = val_ds.shuffle(BATCH_SIZE * 4)
     val_ds = val_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
     val_ds = val_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
+
 
     train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
