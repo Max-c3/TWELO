@@ -14,7 +14,7 @@ def create_new_model():
         # increase size step by step from
         # yolo_v8_s_backbone_coco,
         # yolo_v8_m_backbone_coco,
-        # yolo_v8__backbone_coco,
+        # yolo_v8_l_backbone_coco,
         # yolo_v8_xl_backbone_coco
         load_weights=True
     )
@@ -70,10 +70,6 @@ def train_model(small=0):
     return history, model
 
 def predict(image_path, model=None):
-
-    if not model:
-        model = load_model("models/")
-
     preprocessed_image = preprocess_new_image(image_path)
 
     y_pred = model.predict(preprocessed_image)
