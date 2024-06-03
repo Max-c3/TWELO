@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
-from cloud_detect import provider
+from cloud_detect import async_provider, provider
 
-PROVIDER = provider()
+PROVIDER = async_provider()
 
 BOUNDING_BOX_FORMAT = "xyxy"
 CLASS_MAPPING = {
@@ -11,7 +11,7 @@ CLASS_MAPPING = {
 }
 
 SPLIT_RATIO = 0.2
-BATCH_SIZE = 4
+BATCH_SIZE = 2
 LEARNING_RATE = 0.001
 EPOCH = 2
 GLOBAL_CLIPNORM = 10.0
