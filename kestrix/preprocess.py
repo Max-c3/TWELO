@@ -288,7 +288,7 @@ def preprocess_training_data(small=0):
     train_ds = train_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     # train_ds = train_ds.shuffle(BATCH_SIZE * 4)
     train_ds = train_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
-    # train_ds = train_ds.map(augmenter, num_parallel_calls=tf.data.AUTOTUNE)
+    train_ds = train_ds.map(augmenter, num_parallel_calls=tf.data.AUTOTUNE)
     # train_ds = train_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.map(no_actual_resizing, num_parallel_calls=tf.data.AUTOTUNE)
 
