@@ -74,7 +74,7 @@ def predict(image_path, model=None):
     if not model:
         model = load_model("models/")
 
-    preprocessed_image = preprocess_new_image(input)
+    preprocessed_image = preprocess_new_image(image_path)
 
     y_pred = model.predict(preprocessed_image)
 

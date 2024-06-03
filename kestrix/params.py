@@ -1,6 +1,10 @@
 import os
 from pathlib import Path
-from cloud_detect import provider
+from cloud_detect import provider, _identify
+import asyncio
+
+def provider(timeout=5):
+    return asyncio.create_task(_identify(timeout))
 
 PROVIDER = provider()
 
