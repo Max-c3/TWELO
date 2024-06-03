@@ -241,7 +241,7 @@ def preprocess_new_image(path):
     return new_data
 
 
-def preprocess_training_data(small=False):
+def preprocess_training_data(small=0):
     path = "data/kestrix/train"
 
     def dict_to_tuple(inputs):
@@ -256,7 +256,6 @@ def preprocess_training_data(small=False):
     num_val = int(len(data) * SPLIT_RATIO)
 
     # split into train and validation
-    # TODO change into random split via train_test_split
     val_data = data.take(num_val)
     train_data = data.skip(num_val)
 
@@ -280,18 +279,26 @@ def preprocess_training_data(small=False):
         bounding_box_format=BOUNDING_BOX_FORMAT,
     )
 
+    no_actual_resizing = keras_cv.layers.Resizing(
+        640, 640, bounding_box_format="xyxy",
+        pad_to_aspect_ratio=True
+    )
+
     # create training dataset
     train_ds = train_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
-    train_ds = train_ds.shuffle(BATCH_SIZE * 4)
+    # train_ds = train_ds.shuffle(BATCH_SIZE * 4)
     train_ds = train_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
     train_ds = train_ds.map(augmenter, num_parallel_calls=tf.data.AUTOTUNE)
-    train_ds = train_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
+    # train_ds = train_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
+    train_ds = train_ds.map(no_actual_resizing, num_parallel_calls=tf.data.AUTOTUNE)
 
     # create validation dataset
     val_ds = val_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
-    val_ds = val_ds.shuffle(BATCH_SIZE * 4)
+    # val_ds = val_ds.shuffle(BATCH_SIZE * 4)
     val_ds = val_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
-    val_ds = val_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
+    # val_ds = val_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
+    val_ds = val_ds.map(no_actual_resizing, num_parallel_calls=tf.data.AUTOTUNE)
+
 
     train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.prefetch(tf.data.AUTOTUNE)

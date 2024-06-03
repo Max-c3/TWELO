@@ -1,8 +1,11 @@
-from google.cloud import storage
 import os
+import random
 from pathlib import Path
+
 import tensorflow as tf
+from google.cloud import storage
 from tqdm import tqdm
+
 from kestrix.params import *
 
 
@@ -77,7 +80,7 @@ def parse_annotation(txt_file, folder_path):
 
     return image_path, boxes, class_ids
 
-def prepare_dataset(path:str, small=0):
+def prepare_dataset(path:str, small:0):
     print("Preparing dataset.")
     txt_files = sorted(
         [
@@ -96,8 +99,10 @@ def prepare_dataset(path:str, small=0):
             image_paths.append(image_path)
             bbox.append(boxes)
             classes.append(class_ids)
-    if small:
-        txt_files = txt_files[:200]
+    if small > 0:
+        image_paths = image_paths[:small]
+        bbox = bbox[:small]
+        classes = bbox[:small]
 
     bbox = tf.ragged.constant(bbox)
     classes = tf.ragged.constant(classes)
@@ -118,7 +123,7 @@ def load_dataset(image_path, classes, bbox):
     image = load_image(image_path)
     bounding_boxes = {
         "classes": tf.cast(classes, dtype=tf.float32),
-        "boxes": bbox,
+        "boxes": tf.cast(bbox, dtype=tf.float32),
     }
     return {"images": tf.cast(image, dtype=tf.float32),
             "bounding_boxes": bounding_boxes}
