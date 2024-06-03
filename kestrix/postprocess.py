@@ -1,13 +1,11 @@
-import tensorflow as tf
 import cv2
-import numpy as np
 import os
+from pathlib import Path
 import pandas as pd
-from kestrix.prepro_images import luc_coordinates, slicing_dictionary
+from kestrix.preprocess import luc_coordinates, slicing_dictionary
+from kestrix.params import *
 
-# Function to 'Restitch'
-
-def re_to_absolute_coordinates_xyxy(pred_dict):
+def convert_coordinates_to_full_image(pred_dict):
     '''
     Input:
     pred_dict = output by the prediction of the model (dictionary with one key
@@ -24,6 +22,7 @@ def re_to_absolute_coordinates_xyxy(pred_dict):
 
     # Calling the function 'slicing_dict' and saving the resulting dictionary in a variable
     slicing_dict = slicing_dictionary(coordinates_dict)
+
 
     # Transforming the output by the prediction of the model to dataframes =
     # usable format to work with afterwards
@@ -48,31 +47,21 @@ def re_to_absolute_coordinates_xyxy(pred_dict):
             abs_x_max = (value.iloc[num][2] + slicing_dict[key][0]) - 70
             abs_y_max = (value.iloc[num][3] + slicing_dict[key][2]) - 70
 
-            new_bounding_boxes.loc[len(new_bounding_boxes)] = abs_x_min, abs_y_min, abs_x_max, abs_y_max
+            new_bounding_boxes.loc[len(new_bounding_boxes)] = int(abs_x_min), int(abs_y_min), int(abs_x_max), int(abs_y_max)
 
     return new_bounding_boxes       # Puts out one big Dataframe with all bounding boxes
                                     # to be blurred
 
 
-# blur
+def blur_bounding_boxes(image_path, new_bounding_boxes):
+    output_folder = 'data/output/'
+    image_name = Path(image_path).stem
 
-file_path = '/Users/tatianalupashina/code/lupatat/temp_folder/test_input/DJI_20230504183055_0150_V.txt'
-image_path = '/Users/tatianalupashina/code/lupatat/temp_folder/test_input/DJI_20230504183055_0150_V.JPG'
-image = cv2.imread(image_path)
-
-column_names = ["class", "xmin", "ymin", "xmax", "ymax"]
-
-# Read the file with a space delimiter and assign the column names
-df = pd.read_csv(file_path, names=column_names, delimiter=' ')
-print(df)
-
-# Extract bounding box coordinates and convert them to a list of tuples
-bounding_boxes = df[['xmin', 'ymin', 'xmax', 'ymax']].values.tolist()
-bounding_boxes
-
-def blur_bounding_boxes(image_path, bounding_boxes):
     # Read the image
     image = cv2.imread(image_path)
+
+    bounding_boxes = new_bounding_boxes[['x_min', 'y_min', 'x_max', 'y_max']].to_numpy().tolist()
+
 
     for (xmin, ymin, xmax, ymax) in bounding_boxes:
         # Check if the bounding box coordinates are within the image dimensions
@@ -91,14 +80,18 @@ def blur_bounding_boxes(image_path, bounding_boxes):
         # Apply Gaussian blur to the region of interest with a large kernel size for more blur
         blurred_region = cv2.GaussianBlur(region_of_interest, (401, 401), 0)
 
+
         # Replace the original region with the blurred region
         image[ymin:ymax, xmin:xmax] = blurred_region
 
-    # Display the image with the blurred regions
-    cv2.imshow('Image with Blurred Regions', image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    #Display the image with the blurred regions
+    # cv2.imshow('Image with Blurred Regions', image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
+    # save image with blurring
+    output_image_path = os.path.join(output_folder, f"{image_name}_blurred.jpg")
+    cv2.imwrite(output_image_path, image)
+    print(f'Image saved to {output_image_path}')
 
-
-blur_bounding_boxes(image_path, bounding_boxes)
+    return None

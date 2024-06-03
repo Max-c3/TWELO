@@ -38,3 +38,6 @@ data/
 
 # Models
 models/
+
+# logfile
+logfile.log
