@@ -127,3 +127,4 @@ def load_dataset(image_path, classes, bbox):
     }
     return {"images": tf.cast(image, dtype=tf.float32),
             "bounding_boxes": bounding_boxes}
+
