@@ -48,7 +48,12 @@ download_train_data:
 	@if [ ! -d "${PWD}/data/kestrix/raw" ]; then \
 		mkdir ${PWD}/data/kestrix/raw; \
 	fi
-	@gcloud storage cp -r gs://kestrix/data/raw ${PWD}/data/kestrix
+
+download_test_data:
+	@if [ ! -d "${PWD}/data/kestrix/test" ]; then \
+		mkdir ${PWD}/data/kestrix/test; \
+	fi
+	@gcloud storage cp -r gs://kestrix/data/test ${PWD}/data/kestrix
 
 download_models:
 	@gcloud storage cp -r gs://kestrix/models models
