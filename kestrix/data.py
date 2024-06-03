@@ -102,7 +102,7 @@ def prepare_dataset(path:str, small:0):
     if small > 0:
         image_paths = image_paths[:small]
         bbox = bbox[:small]
-        classes = bbox[:small]
+        classes = classes[:small]
 
     bbox = tf.ragged.constant(bbox)
     classes = tf.ragged.constant(classes)
