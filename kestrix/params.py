@@ -1,12 +1,8 @@
 import os
 from pathlib import Path
-from cloud_detect import provider, _identify
-import asyncio
+from cloud_detect import async_provider
 
-def provider(timeout=5):
-    return asyncio.create_task(_identify(timeout))
-
-PROVIDER = provider()
+PROVIDER = async_provider()
 
 BOUNDING_BOX_FORMAT = "xyxy"
 CLASS_MAPPING = {
