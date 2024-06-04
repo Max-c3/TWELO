@@ -42,10 +42,29 @@ def convert_coordinates_to_full_image(pred_dict):
 
         for num in range(0, value.shape[0]):
 
-            abs_x_min = (value.iloc[num][0] + slicing_dict[key][0]) - 70
-            abs_y_min = (value.iloc[num][1] + slicing_dict[key][2]) - 70
-            abs_x_max = (value.iloc[num][2] + slicing_dict[key][0]) - 70
-            abs_y_max = (value.iloc[num][3] + slicing_dict[key][2]) - 70
+            x_min, y_min, x_max, y_max = value.iloc[num][0], value.iloc[num][1], value.iloc[num][2], value.iloc[num][3]
+
+            x_min = max(x_min, 0)
+            x_min = min(x_min, 640)
+
+            y_min = max(y_min, 0)
+            y_min = min(y_min, 640)
+
+            x_max = min(x_max, 640)
+            x_max = max(x_max, 0)
+
+            y_max = min(y_max, 640)
+            y_max = max(y_max, 0)
+
+            abs_x_min = (x_min + slicing_dict[key][0]) - 70
+            abs_y_min = (y_min + slicing_dict[key][2]) - 70
+            abs_x_max = (x_max + slicing_dict[key][0]) - 70
+            abs_y_max = (y_max + slicing_dict[key][2]) - 70
+
+            abs_x_min = max(abs_x_min, 0)
+            abs_y_min = max(abs_y_min, 0)
+            abs_x_max = max(abs_x_max, 0)
+            abs_y_max = max(abs_y_max, 0)
 
             new_bounding_boxes.loc[len(new_bounding_boxes)] = int(abs_x_min), int(abs_y_min), int(abs_x_max), int(abs_y_max)
 
