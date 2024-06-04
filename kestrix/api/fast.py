@@ -3,11 +3,21 @@ import os
 from PIL import Image
 from io import BytesIO
 
+from kestrix.model import load_model, predict, compile_model
+from kestrix.postprocess import convert_coordinates_to_full_image, blur_bounding_boxes
+from kestrix.params import PROVIDER
+
 app = FastAPI()
 
+loaded_model =  load_model("compartment_20240531.keras")
+model = compile_model(loaded_model)
+
+
 @app.get("/")
-def root():
-    return {'API check': 'Hello, endpoint connected.'}
+async def root():
+    # Ensure provider is initialized
+    await PROVIDER
+    return {'API check': 'Hello, API endpoint connected.'}
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
@@ -16,19 +26,39 @@ async def upload(file: UploadFile = File(...)):
         contents = await file.read()
 
         # Convert the byte contents into an image
-        image = Image.open(BytesIO(contents))
-
-        # Rotate Image By 180 Degree
-        rotated_image = image.rotate(180)
+        input_image = Image.open(BytesIO(contents))
 
         # Save the image to a BytesIO object
         bytes_io = BytesIO()
-        rotated_image.save(bytes_io, format='JPEG')
+        input_image.save(bytes_io, format='JPEG')
         bytes_io.seek(0)
 
         # Expand the user's home directory for saving the image
-        file_location = os.path.expanduser(f"~/Downloads/processed_{file.filename}")
-        rotated_image.save(file_location, format='JPEG')
+        input_folder = 'data/input'
+        input_image_path = os.path.join(input_folder, f"{file.filename}")
+
+        input_image.save(input_image_path, format='JPEG')
+
+        ## Pipeline to apply Model predict, stitch batch bounding boxes coordinates and blur image
+        # Apply Model predict
+        compartments_bounding_boxes = predict(input_image_path, model)
+
+        # Stitch back bounding boxes of the compartments to image
+        image_bounding_boxes = convert_coordinates_to_full_image(compartments_bounding_boxes)
+
+        # Blur input image based of image bounding boxes
+        blur_bounding_boxes(input_image_path, image_bounding_boxes)
+
+        # Retrieve blurred image
+        output_folder = 'data/output'
+        output_file_name = os.path.splitext(os.path.basename(file.filename))[0]
+        output_image_path = os.path.join(output_folder, f"{output_file_name}_blurred.jpg")
+        blurred_image = Image.open(output_image_path)
+
+        # Save the image to a BytesIO object
+        bytes_io = BytesIO()
+        blurred_image.save(bytes_io, format='JPEG')
+        bytes_io.seek(0)
 
         return Response(content=bytes_io.getvalue(), media_type="image/jpeg")
         # {"INFO": f"File '{file.filename}' uploaded to the API and saved successfully to {file_location}."}

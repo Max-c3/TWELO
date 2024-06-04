@@ -37,6 +37,7 @@ reset_local_data:
 	@mkdir data/kestrix/test
 	@mkdir data/input
 	@mkdir data/output
+	@mkdir models
 
 
 download_train_data:
@@ -55,14 +56,23 @@ download_test_data:
 	@gcloud storage cp -r gs://kestrix/data/test ${PWD}/data/kestrix
 
 download_models:
-	@gcloud storage cp -r gs://kestrix/models models
+	@gcloud storage cp -r gs://kestrix/models
 
 upload_models:
 	@gcloud storage cp -r models gs://kestrix/models
 
 run_api:
-	uvicorn kestrix.fast_api:app --reload
+	uvicorn kestrix.api.fast:app --reload
 
 run_train:
-	python -c "from kestrix.model import train_model; train_model()"
-	gcloud storage cp -r models gs://kestrix/models
+	@python -c "from kestrix.model import train_model; train_model()"
+	@gcloud storage cp -r models gs://kestrix/models .
+
+run_test:
+	@ls models/
+	@read -p 'Select model without file ending: ' model_name && \
+	python -c "from kestrix.model import test_model; test_model('$$model_name')"
+
+run_test_all:
+	@gcloud storage cp -r -n gs://kestrix/models .
+	@python -c "from kestrix.model import test_all_models; test_all_models()"

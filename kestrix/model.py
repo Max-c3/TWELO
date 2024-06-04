@@ -1,7 +1,10 @@
-import logging
+import os
+from pathlib import Path
 from kestrix.params import *
-from kestrix.registry import save_model, load_model
-from kestrix.preprocess import preprocess_new_image, preprocess_training_data
+from kestrix.registry import load_model
+from kestrix.preprocess import preprocess_new_image, preprocess_training_data, preprocess_test_data
+from kestrix.data import prepare_dataset, load_dataset
+from kestrix.visualization import visualize_detections
 import tensorflow as tf
 from tensorflow import keras
 import keras_cv
@@ -54,18 +57,26 @@ def train_model(small=0):
 
     train_ds, val_ds = preprocess_training_data(small)
 
-    coco_metrics_callback = keras_cv.callbacks.PyCOCOCallback(
-        val_ds,
-        BOUNDING_BOX_FORMAT)
+    callbacks = [
+        keras_cv.callbacks.PyCOCOCallback(
+                    val_ds,
+                    BOUNDING_BOX_FORMAT
+                ),
+                keras.callbacks.EarlyStopping(patience=10),
+                keras.callbacks.ReduceLROnPlateau(
+                    monitor='val_loss',
+                    factor=0.1,
+                    patience=5
+                )
+                ]
 
     print("Training model.")
     history = model.fit(
         train_ds,
         validation_data=val_ds,
-        epochs=2,
-        callbacks=[coco_metrics_callback],
+        epochs=EPOCH,
+        callbacks=[callbacks],
     )
-    save_model(model)
 
     return history, model
 
@@ -75,3 +86,40 @@ def predict(image_path, model=None):
     y_pred = model.predict(preprocessed_image)
 
     return y_pred
+
+def test_model(model_name):
+    model = load_model(model_name)
+    model = compile_model(model)
+
+    test_ds = preprocess_test_data()
+
+    results = model.evaluate(test_ds)
+    visualize_detections(model, test_ds)
+    write_metrics(model_name, results)
+
+def write_metrics(model_name, results, write_mode="a"):
+    metrics = ["loss", "box_loss", "class_loss"]
+    with open('metrics.txt', write_mode) as f:
+        f.write(f"Model: {model_name}\n")
+        for value, metric in zip(results, metrics):
+            f.write(f"{metric}: ")
+            f.write(f"{round(value, 2)}")
+            f.write("\n")
+        f.write("\n\n")
+
+def test_all_models():
+    test_ds = preprocess_test_data()
+
+    model_list = sorted(
+            [
+                Path(file_name).stem
+                for file_name in os.listdir("models")
+                if file_name.endswith(".keras")
+            ]
+        )
+
+    for model_name in model_list:
+        model = load_model(model_name)
+        model = compile_model(model)
+        results = model.evaluate(test_ds)
+        write_metrics(model_name, results, write_mode="a")
