@@ -30,7 +30,6 @@ notebook_extensions:
 
 reset_local_data:
 	@rm -rf data/*
-	@rm -rf models
 	@mkdir data/kestrix/
 	@mkdir data/kestrix/comp
 	@mkdir data/kestrix/raw
@@ -38,7 +37,9 @@ reset_local_data:
 	@mkdir data/kestrix/test
 	@mkdir data/input
 	@mkdir data/output
-	@mkdir models
+	@if [ ! -d "models" ]; then \
+		mkdir models; \
+	fi
 
 
 download_train_data:
