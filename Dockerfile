@@ -28,5 +28,5 @@ RUN pip install .
 # Expose port 8000
 # EXPOSE 8080
 
-CMD uvicorn kestrix.api.fast:app --host 0.0.0.0 --port $PORT
+CMD uvicorn kestrix.fast_api:app --host 0.0.0.0 --port $PORT
 #-> port 8000 correct?
