@@ -260,6 +260,8 @@ def preprocess_training_data(small=0):
     train_data = data.skip(num_val)
 
     # Image Augmentation: https://keras.io/api/keras_cv/layers/augmentation/
+    gray_scale = keras_cv.layers.Grayscale(output_channels=3)
+
     augmenter = keras.Sequential(
         layers=[
             keras_cv.layers.RandomFlip(
@@ -283,6 +285,7 @@ def preprocess_training_data(small=0):
     train_ds = train_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.shuffle(BATCH_SIZE * 4)
     train_ds = train_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
+    train_ds = train_ds.map(gray_scale, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.map(augmenter, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
 
@@ -290,6 +293,7 @@ def preprocess_training_data(small=0):
     val_ds = val_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     val_ds = val_ds.shuffle(BATCH_SIZE * 4)
     val_ds = val_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
+    val_ds = val_ds.map(gray_scale, num_parallel_calls=tf.data.AUTOTUNE)
     val_ds = val_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
 
 
@@ -300,3 +304,29 @@ def preprocess_training_data(small=0):
     val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
 
     return train_ds, val_ds
+
+def preprocess_test_data():
+    path = "data/kestrix/test"
+
+    def dict_to_tuple(inputs):
+        return inputs["images"], bounding_box.to_dense(
+            inputs["bounding_boxes"], max_boxes=32
+        )
+
+    test_data = prepare_dataset(path)
+
+    resizing = keras_cv.layers.Resizing(
+        width=640,
+        height= 640,
+        bounding_box_format=BOUNDING_BOX_FORMAT,
+        pad_to_aspect_ratio=True
+    )
+
+    test_ds = test_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
+    test_ds = test_ds.shuffle(BATCH_SIZE * 4)
+    test_ds = test_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
+    test_ds = test_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
+    test_ds = test_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    test_ds = test_ds.prefetch(tf.data.AUTOTUNE)
+
+    return test_ds

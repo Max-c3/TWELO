@@ -80,7 +80,7 @@ def parse_annotation(txt_file, folder_path):
 
     return image_path, boxes, class_ids
 
-def prepare_dataset(path:str, small:0):
+def prepare_dataset(path:str, small=0):
     print("Preparing dataset.")
     txt_files = sorted(
         [
@@ -120,11 +120,15 @@ def load_image(image_path):
 def load_dataset(image_path, classes, bbox):
     print("Loading dataset.")
     # Read Image
-    image = load_image(image_path)
+    def load_norm_image(image_path):
+        image = tf.io.read_file(image_path)
+        image = tf.image.decode_jpeg(image, channels=3)
+        image = image/255
+        return image
+    image = load_norm_image(image_path)
     bounding_boxes = {
         "classes": tf.cast(classes, dtype=tf.float32),
         "boxes": bbox,
     }
     return {"images": tf.cast(image, dtype=tf.float32),
             "bounding_boxes": bounding_boxes}
-

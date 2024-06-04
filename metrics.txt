@@ -1,0 +1,12 @@
+Model: yolo_v8_xl_backbone_coco_only_objects
+loss: 5.85
+box_loss: 3.18
+class_loss: 2.66
+
+
+Model: yolo_v8_s_backbone_coco_only_objects
+loss: 6.22
+box_loss: 3.35
+class_loss: 2.86
+
+
