@@ -19,6 +19,10 @@ RUN pip install -r requirements.txt
 
 COPY setup.py setup.py
 COPY kestrix kestrix
+# models repositary need to include the loaded_model in fast.py (see line 12)
+COPY models models
+# data repositary should be copied after having made make reset_local_data
+COPY data data
 
 RUN pip install .
 
