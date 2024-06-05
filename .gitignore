@@ -32,6 +32,7 @@ env/
 venv/
 ENV/
 .python-version
+.env.yaml
 
 # Data
 data/
