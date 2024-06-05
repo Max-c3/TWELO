@@ -37,7 +37,9 @@ reset_local_data:
 	@mkdir data/kestrix/test
 	@mkdir data/input
 	@mkdir data/output
-	@mkdir models
+	@if [ ! -d "models" ]; then \
+		mkdir models; \
+	fi
 
 
 download_train_data:
@@ -56,7 +58,7 @@ download_test_data:
 	@gcloud storage cp -r gs://kestrix/data/test ${PWD}/data/kestrix
 
 download_models:
-	@gcloud storage cp -r gs://kestrix/models
+	@gcloud storage cp -r gs://kestrix/models .
 
 upload_models:
 	@gcloud storage cp -r models gs://kestrix/models

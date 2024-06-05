@@ -10,3 +10,7 @@ box_loss: 3.35
 class_loss: 2.86
 
 
+Model: yolo_v8_m_backbone_coco_only_objects_batch_size16_epochs40_lr-plateau
+loss: 7.71
+box_loss: 3.99
+class_loss: 3.71
