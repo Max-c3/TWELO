@@ -31,7 +31,15 @@ def convert_coordinates_to_full_image(pred_dict):
     for i in range (0, 48):
         columns = ['x_min', 'y_min', 'x_max', 'y_max']
         data_frame = pd.DataFrame(data= pred_dict['boxes'][i], columns=columns)
+        non_errors = ((data_frame["x_min"] != -1.) & (data_frame["x_max"] != -1.) & (data_frame["y_min"] != -1.) & (data_frame["y_max"] != -1.))
+        data_frame[non_errors]
         dict_of_dfs[i] = data_frame
+
+
+    # Cut all the lines where the row is [-1.0, -1.0, -1.0, -1.0]
+    non_errors = ((dict_of_dfs["x_min"] != -1) & (dict_of_dfs["x_max"] != -1) & (dict_of_dfs["y_min"] != -1) & (dict_of_dfs["y_max"] != -1))
+
+    dict_of_dfs[non_errors]
 
     # Defining empty dataframe with the right column-names
     new_bounding_boxes = pd.DataFrame(columns=['x_min', 'y_min', 'x_max', 'y_max'])
