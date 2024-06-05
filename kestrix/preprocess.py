@@ -235,7 +235,11 @@ def preprocess_new_image(path):
     splitted_images = split_into_compartments(padded_image)
     splitted_images_float = tf.cast(splitted_images, dtype=tf.float32)
     splitted_images_float_batched = tf.expand_dims(splitted_images_float, axis=0)
+
+    gray_scale = keras_cv.layers.Grayscale(output_channels=3)
+
     new_data = tf.data.Dataset.from_tensor_slices(splitted_images_float_batched)
+    new_data = new_data.map(gray_scale, num_parallel_calls=tf.data.AUTOTUNE)
     new_data = new_data.prefetch(tf.data.AUTOTUNE)
 
     return new_data
@@ -315,6 +319,8 @@ def preprocess_test_data():
 
     test_data = prepare_dataset(path)
 
+    gray_scale = keras_cv.layers.Grayscale(output_channels=3)
+
     resizing = keras_cv.layers.Resizing(
         width=640,
         height= 640,
@@ -325,6 +331,7 @@ def preprocess_test_data():
     test_ds = test_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     test_ds = test_ds.shuffle(BATCH_SIZE * 4)
     test_ds = test_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
+    test_ds = test_ds.map(gray_scale, num_parallel_calls=tf.data.AUTOTUNE)
     test_ds = test_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
     test_ds = test_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
     test_ds = test_ds.prefetch(tf.data.AUTOTUNE)
