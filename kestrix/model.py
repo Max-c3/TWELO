@@ -51,6 +51,18 @@ def compile_model(model):
 
     return model
 
+def compile_retina_model(model):
+    print("Compiling model.")
+    optimizer = tf.keras.optimizers.legacy.Adam(
+        learning_rate=LEARNING_RATE,
+        global_clipnorm=GLOBAL_CLIPNORM,
+    )
+    model.compile(
+        optimizer=optimizer, classification_loss="Focal", box_loss="SmoothL1"
+    )
+
+    return model
+
 def train_model(small=0):
     model = create_new_model()
     model = compile_model(model)
@@ -89,7 +101,10 @@ def predict(image_path, model=None):
 
 def test_model(model_name):
     model = load_model(model_name)
-    model = compile_model(model)
+    if model_name.startswith("Retina"):
+        model = compile_retina_model(model)
+    else:
+        model = compile_model(model)
 
     test_ds = preprocess_test_data()
 
@@ -117,9 +132,13 @@ def test_all_models():
                 if file_name.endswith(".keras")
             ]
         )
-
+    with open('metrics.txt', "w") as f:
+        f.write("")
     for model_name in model_list:
         model = load_model(model_name)
-        model = compile_model(model)
+        if model_name.startswith("Retina"):
+            model = compile_retina_model(model)
+        else:
+            model = compile_model(model)
         results = model.evaluate(test_ds)
         write_metrics(model_name, results, write_mode="a")

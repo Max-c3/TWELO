@@ -1,16 +1,41 @@
-Model: yolo_v8_xl_backbone_coco_only_objects
-loss: 5.85
-box_loss: 3.18
-class_loss: 2.66
-
-
-Model: yolo_v8_s_backbone_coco_only_objects
-loss: 6.22
-box_loss: 3.35
-class_loss: 2.86
+Model: RetinaNet_balanced_batch_size16_epochs50_AdamW
+loss: 1.49
+box_loss: 0.7
+class_loss: 0.79
+percent_boxes_matched_with_anchor: 0.8813
 
 
 Model: yolo_v8_m_backbone_coco_only_objects_batch_size16_epochs40_lr-plateau
-loss: 7.71
-box_loss: 3.99
+loss: 7.72
+box_loss: 4.0
 class_loss: 3.71
+
+
+Model: yolo_v8_m_coco_balanced_batch_size16_epochs2_Adam
+loss: 0.01
+box_loss: 0.0
+class_loss: 0.0
+
+
+Model: yolo_v8_m_coco_balanced_batch_size16_epochs40_noES_noPlateau
+loss: 6.26
+box_loss: 3.32
+class_loss: 2.94
+
+
+Model: yolo_v8_m_coco_balanced_batch_size16_epochs70_noES_noPlateau_adamW
+loss: 5.53
+box_loss: 2.8
+class_loss: 2.73
+
+
+Model: yolo_v8_s_backbone_coco_only_objects
+loss: 6.23
+box_loss: 3.36
+class_loss: 2.87
+Model: yolo_v8_xl_backbone_coco_only_objects
+loss: 5.87
+box_loss: 3.2
+class_loss: 2.67
+
+
