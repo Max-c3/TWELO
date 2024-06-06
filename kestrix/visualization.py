@@ -33,7 +33,7 @@ def visualize_bounding_box(path:str) -> None:
         class_mapping=CLASS_MAPPING,
     )
 
-def visualize_detections(model, dataset):
+def visualize_detections(model, dataset, path):
     images, y_true = next(iter(dataset.take(1)))
     images = images*255
     y_pred = model.predict(images)
@@ -45,12 +45,13 @@ def visualize_detections(model, dataset):
         y_true=y_true,
         y_pred=y_pred,
         scale=4,
-        rows=2,
-        cols=2,
-        show=True,
+        rows=4,
+        cols=4,
+        #show=True,
         font_scale=0.7,
         class_mapping=CLASS_MAPPING,
-        legend=True
+        legend=True,
+        path=path
     )
 
 def plot_history(history, title=None):

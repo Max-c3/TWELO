@@ -76,5 +76,4 @@ run_test:
 	python -c "from kestrix.model import test_model; test_model('$$model_name')"
 
 run_test_all:
-	@gcloud storage cp -r -n gs://kestrix/models .
 	@python -c "from kestrix.model import test_all_models; test_all_models()"

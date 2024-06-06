@@ -8,6 +8,7 @@ from kestrix.visualization import visualize_detections
 import tensorflow as tf
 from tensorflow import keras
 import keras_cv
+import matplotlib.pyplot as plt
 
 def create_new_model():
     print("Creating new yolo model.")
@@ -110,7 +111,7 @@ def test_model(model_name):
 
     results = model.evaluate(test_ds)
     visualize_detections(model, test_ds)
-    write_metrics(model_name, results)
+    #write_metrics(model_name, results)
 
 def write_metrics(model_name, results, write_mode="a"):
     metrics = ["loss", "box_loss", "class_loss"]
@@ -132,8 +133,8 @@ def test_all_models():
                 if file_name.endswith(".keras")
             ]
         )
-    with open('metrics.txt', "w") as f:
-        f.write("")
+    # with open('metrics.txt', "w") as f:
+    #     f.write("")
     for model_name in model_list:
         model = load_model(model_name)
         if model_name.startswith("Retina"):
@@ -141,4 +142,6 @@ def test_all_models():
         else:
             model = compile_model(model)
         results = model.evaluate(test_ds)
-        write_metrics(model_name, results, write_mode="a")
+        print("vis now")
+        visualize_detections(model, test_ds, path=f"data/visualisations/{model_name}.png")
+        #write_metrics(model_name, results, write_mode="a")

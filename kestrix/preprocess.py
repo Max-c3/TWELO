@@ -329,7 +329,7 @@ def preprocess_test_data():
     )
 
     test_ds = test_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
-    test_ds = test_ds.shuffle(BATCH_SIZE * 4)
+    #test_ds = test_ds.shuffle(BATCH_SIZE * 4)
     test_ds = test_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
     test_ds = test_ds.map(gray_scale, num_parallel_calls=tf.data.AUTOTUNE)
     test_ds = test_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)

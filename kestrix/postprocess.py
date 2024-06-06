@@ -87,7 +87,7 @@ def blur_bounding_boxes(image_path, new_bounding_boxes):
     # Read the image
     image = cv2.imread(image_path)
 
-    bounding_boxes = new_bounding_boxes[['x_min', 'y_min', 'x_max', 'y_max']].to_numpy().tolist()
+    bounding_boxes = new_bounding_boxes[['x_mins', 'y_min', 'x_max', 'y_max']].to_numpy().tolist()
 
 
     for (xmin, ymin, xmax, ymax) in bounding_boxes:
