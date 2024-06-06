@@ -27,6 +27,7 @@ ipython_config.py
 
 # Environments
 .env
+.env.yaml
 .venv
 env/
 venv/

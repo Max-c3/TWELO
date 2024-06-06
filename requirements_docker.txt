@@ -5,7 +5,7 @@ notebook==6.5.6
 numpy==1.23.5
 nbdime
 pandas==1.5.3
-# db-types
+#db-types
 google-cloud-storage
 cloud-detect
 pyarrow
