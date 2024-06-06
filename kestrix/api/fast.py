@@ -83,7 +83,7 @@ async def upload(file: UploadFile = File(...)):
         # Return the error message
         return {"message": f"There was an error processing the file: {str(e)}"}
 
-@app.post("/upload_twelo25")
+@app.post("/upload_twelo25") # To work, you need 'data/bounding_boxes' repository including the .txt of the bounding boxes.
 async def upload(file: UploadFile = File(...)):
     try:
         # Read the contents of the uploaded file
