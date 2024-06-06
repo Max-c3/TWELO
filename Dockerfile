@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --upgrade pip
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
 COPY requirements_docker.txt requirements.txt
 RUN pip install -r requirements.txt
@@ -26,11 +27,4 @@ COPY data data
 
 RUN pip install .
 
-# Set environment variable for port
-# ENV PORT 8080
-
-# Expose port 8000
-# EXPOSE 8080
-
-CMD uvicorn kestrix.fast_api:app --host 0.0.0.0 --port $PORT
-#-> port 8000 correct?
+CMD uvicorn kestrix.api.fast:app --host 0.0.0.0 --port $PORT
