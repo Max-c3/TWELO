@@ -4,9 +4,9 @@ import time
 from PIL import Image
 from io import BytesIO
 
-from kestrix.model import load_model, predict, compile_model, compile_retina_model
-from kestrix.postprocess import convert_coordinates_to_full_image, blur_bounding_boxes
-from kestrix.api.txt_to_pd_df import parse_original_annotations
+from twelo.model import load_model, predict, compile_model, compile_retina_model
+from twelo.postprocess import convert_coordinates_to_full_image, blur_bounding_boxes
+from twelo.api.txt_to_pd_df import parse_original_annotations
 
 app = FastAPI()
 

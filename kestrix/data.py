@@ -6,17 +6,17 @@ import tensorflow as tf
 from google.cloud import storage
 from tqdm import tqdm
 
-from kestrix.params import *
+from twelo.params import *
 
 
 def download_raw_data():
-    """Download raw data from google cloud to `data/kestrix/raw/`.
+    """Download raw data from google cloud to `data/twelo/raw/`.
 
     Returns:
         None
     """
     remote_path = "data/raw/"
-    local_path_full = "data/kestrix/raw/"
+    local_path_full = "data/twelo/raw/"
 
     client = storage.Client()
     blobs = client.list_blobs(BUCKET_NAME, prefix=remote_path, delimiter="/")
@@ -34,13 +34,13 @@ def download_raw_data():
     return None
 
 # def download_comp_data():
-#     """Download compartmented data from google cloud to `/data/kestrix/comp/`.
+#     """Download compartmented data from google cloud to `/data/twelo/comp/`.
 
 #     Returns:
 #         None
 #     """
 #     remote_path = "data/comp/"
-#     local_path_full = "data/kestrix/comp/"
+#     local_path_full = "data/twelo/comp/"
 
 #     client = storage.Client()
 #     blobs = client.list_blobs(BUCKET_NAME, prefix=remote_path, delimiter="/")

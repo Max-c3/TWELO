@@ -7,8 +7,8 @@ import tqdm
 import keras_cv
 from keras_cv import bounding_box
 
-from kestrix.data import prepare_dataset, load_dataset
-from kestrix.params import *
+from twelo.data import prepare_dataset, load_dataset
+from twelo.params import *
 
 
 def convert_image_to_tensor(image_path:str) -> tf.Tensor:
@@ -246,7 +246,7 @@ def preprocess_new_image(path):
 
 
 def preprocess_training_data(small=0):
-    path = "data/kestrix/train"
+    path = "data/twelo/train"
 
     def dict_to_tuple(inputs):
         return inputs["images"], bounding_box.to_dense(
@@ -310,7 +310,7 @@ def preprocess_training_data(small=0):
     return train_ds, val_ds
 
 def preprocess_test_data():
-    path = "data/kestrix/test"
+    path = "data/twelo/test"
 
     def dict_to_tuple(inputs):
         return inputs["images"], bounding_box.to_dense(

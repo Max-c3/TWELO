@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
-from kestrix.preprocess import luc_coordinates, slicing_dictionary
+from twelo.preprocess import luc_coordinates, slicing_dictionary
 
 # Functions
 
@@ -182,7 +182,7 @@ def to_absolute_coordinates_xyxy(slicing_dict, compartment_num, x_min_tmp, y_min
     return abs_x_min, abs_y_min, abs_x_max, abs_y_max
 
 
-# Function 
+# Function
 
 
 
@@ -190,8 +190,8 @@ def to_absolute_coordinates_xyxy(slicing_dict, compartment_num, x_min_tmp, y_min
 # Now putting all of the above together to a pipeline!
 
 # Example paths
-input_path= '/Users/myself/Pictures/Kestrix Bootcamp Project/Training_Data_Kestrix/obj_Train_data'
-output_path = '/Users/myself/Pictures/Kestrix Bootcamp Project/testing_saving_txts'
+input_path= '/Users/myself/Pictures/twelo Bootcamp Project/Training_Data_twelo/obj_Train_data'
+output_path = '/Users/myself/Pictures/twelo Bootcamp Project/testing_saving_txts'
 
 
 def exporting_training_txts(input_path, output_path):

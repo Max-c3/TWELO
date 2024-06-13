@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := default
 #################### PACKAGE ACTIONS ###################
 reinstall_package:
-	@pip uninstall -y kestrix || :
+	@pip uninstall -y twelo || :
 	@pip install -e .
 
 
@@ -14,12 +14,12 @@ install:
 
 
 setup_virtual_env:
-	@if pyenv virtualenvs | grep -q "kestrix"; then \
-		echo "Virtual environment 'kestrix' already exists."; \
+	@if pyenv virtualenvs | grep -q "twelo"; then \
+		echo "Virtual environment 'twelo' already exists."; \
 	else \
-		pyenv virtualenv 3.10.6 kestrix; \
+		pyenv virtualenv 3.10.6 twelo; \
 	fi
-	@pyenv local kestrix
+	@pyenv local twelo
 
 notebook_extensions:
 	@jupyter contrib nbextension install --user
@@ -30,11 +30,11 @@ notebook_extensions:
 
 reset_local_data:
 	@rm -rf data/*
-	@mkdir data/kestrix/
-	@mkdir data/kestrix/comp
-	@mkdir data/kestrix/raw
-	@mkdir data/kestrix/train
-	@mkdir data/kestrix/test
+	@mkdir data/twelo/
+	@mkdir data/twelo/comp
+	@mkdir data/twelo/raw
+	@mkdir data/twelo/train
+	@mkdir data/twelo/test
 	@mkdir data/input
 	@mkdir data/output
 	@if [ ! -d "models" ]; then \
@@ -43,19 +43,19 @@ reset_local_data:
 
 
 download_train_data:
-	@if [ ! -d "${PWD}/data/kestrix/train" ]; then \
-		mkdir ${PWD}/data/kestrix/train; \
+	@if [ ! -d "${PWD}/data/twelo/train" ]; then \
+		mkdir ${PWD}/data/twelo/train; \
 	fi
-	@gcloud storage cp -r gs://kestrix/data/train ${PWD}/data/kestrix
-	@if [ ! -d "${PWD}/data/kestrix/raw" ]; then \
-		mkdir ${PWD}/data/kestrix/raw; \
+	@gcloud storage cp -r gs://kestrix/data/train ${PWD}/data/twelo
+	@if [ ! -d "${PWD}/data/twelo/raw" ]; then \
+		mkdir ${PWD}/data/twelo/raw; \
 	fi
 
 download_test_data:
-	@if [ ! -d "${PWD}/data/kestrix/test" ]; then \
-		mkdir ${PWD}/data/kestrix/test; \
+	@if [ ! -d "${PWD}/data/twelo/test" ]; then \
+		mkdir ${PWD}/data/twelo/test; \
 	fi
-	@gcloud storage cp -r gs://kestrix/data/test ${PWD}/data/kestrix
+	@gcloud storage cp -r gs://kestrix/data/test ${PWD}/data/twelo
 
 download_models:
 	@gcloud storage cp -r gs://kestrix/models .
@@ -64,16 +64,16 @@ upload_models:
 	@gcloud storage cp -r models gs://kestrix/models
 
 run_api:
-	uvicorn kestrix.api.fast:app --reload
+	uvicorn twelo.api.fast:app --reload
 
 run_train:
-	@python -c "from kestrix.model import train_model; train_model()"
+	@python -c "from twelo.model import train_model; train_model()"
 	@gcloud storage cp -r models gs://kestrix/models .
 
 run_test:
 	@ls models/
 	@read -p 'Select model without file ending: ' model_name && \
-	python -c "from kestrix.model import test_model; test_model('$$model_name')"
+	python -c "from twelo.model import test_model; test_model('$$model_name')"
 
 run_test_all:
-	@python -c "from kestrix.model import test_all_models; test_all_models()"
+	@python -c "from twelo.model import test_all_models; test_all_models()"

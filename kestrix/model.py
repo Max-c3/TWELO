@@ -1,10 +1,10 @@
 import os
 from pathlib import Path
-from kestrix.params import *
-from kestrix.registry import load_model
-from kestrix.preprocess import preprocess_new_image, preprocess_training_data, preprocess_test_data
-from kestrix.data import prepare_dataset, load_dataset
-from kestrix.visualization import visualize_detections
+from twelo.params import *
+from twelo.registry import load_model
+from twelo.preprocess import preprocess_new_image, preprocess_training_data, preprocess_test_data
+from twelo.data import prepare_dataset, load_dataset
+from twelo.visualization import visualize_detections
 import tensorflow as tf
 from tensorflow import keras
 import keras_cv

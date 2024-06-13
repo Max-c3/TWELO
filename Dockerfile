@@ -19,7 +19,7 @@ COPY requirements_docker.txt requirements.txt
 RUN pip install -r requirements.txt
 
 COPY setup.py setup.py
-COPY kestrix kestrix
+COPY twelo twelo
 # models repositary need to include the loaded_model in fast.py (see line 12)
 COPY models models
 # data repositary should be copied after having made make reset_local_data
@@ -27,4 +27,4 @@ COPY data data
 
 RUN pip install .
 
-CMD uvicorn kestrix.api.fast:app --host 0.0.0.0 --port $PORT
+CMD uvicorn twelo.api.fast:app --host 0.0.0.0 --port $PORT

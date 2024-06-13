@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from kestrix.preprocess import luc_coordinates, slicing_dictionary
-from kestrix.params import *
+from twelo.preprocess import luc_coordinates, slicing_dictionary
+from twelo.params import *
 
 def convert_coordinates_to_full_image(pred_dict):
     '''

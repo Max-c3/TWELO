@@ -1,6 +1,6 @@
 from keras_cv import visualization, bounding_box
-from kestrix.params import *
-from kestrix.data import load_dataset, prepare_dataset
+from twelo.params import *
+from twelo.data import load_dataset, prepare_dataset
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
